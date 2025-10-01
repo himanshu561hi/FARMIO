@@ -102,6 +102,7 @@ AGRI/
 │       ├── assets/
 │       ├── components/
 │       │   ├── AdminLogin.jsx
+│       │   ├── Loan.jsx
 │       │   ├── AnalyticsCards.jsx
 │       │   ├── BuyNowForm.jsx
 │       │   ├── Chat.jsx
@@ -225,7 +226,8 @@ http://localhost:5173
  <ul>
   <li>🔐 Secure user authentication</li>
    <li>📦 Product listings with images</li>
-    <li>💬 Real-time chat support</li>
+    <li>💳 Loan and Emi Calculator with Bank Comparison</li>
+    <li>🌍 Full multilingual support</li> 
      <li>📊 Price analytics and transparency</li>
       <li>🌦️ Weather integration for farmers</li>
        <li>💳 Razorpay payment system</li>
@@ -245,7 +247,7 @@ http://localhost:5173
                <li><strong>Email:</strong>  <a href="ag0567688@gmail.com">Send me an email</a> </li>
                 <li><strong>LinkedIn:</strong> <a href="https://linkedin.com/in/amangupta9454">LINKEDIN</a></li>
                  <li><strong>GitHub:</strong> <a href="https://github.com/amangupta9454">GITHUB</a></li>
-                 <li><strong>Portfolio:</strong> <a href="https://guptaaman.netlify.app/">PORTFOLIO</a></li>
+                 <li><strong>Portfolio:</strong> <a href="http://gupta-aman-portfolio.netlify.app/">PORTFOLIO</a></li>
                   </ul> 
                   <hr>
                    <h2 id="creator">👨‍💻 Created By</h2> 
