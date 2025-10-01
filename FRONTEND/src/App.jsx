@@ -19,6 +19,7 @@ import WeatherApp from './components/WeatherApp';
 import PriceTransparency from './components/PriceTransparency';
 import AdminLogin from './components/AdminLogin';
 import Ai from './components/Ai';
+import Loan from './components/Loan';
 
 const App = () => {
   const [user, setUser] = useState(null);
@@ -67,6 +68,7 @@ const App = () => {
           <Route path="/login" element={<Login setUser={setUser} />} />
           <Route path="/register" element={<Register />} />
           <Route path="/ai" element={<Ai />} />
+          <Route path="/loan" element={<Loan />} />
           <Route
             path="/farmer"
             element={
