@@ -609,8 +609,8 @@ Use emojis, bullet points, and clear headings to make information easily digesti
   };
 
   const callGeminiAPI = async (prompt) => {
-    const API_KEY = 'AIzaSyCn8GW0eBowyLCfETjR5sXpZeBqJZixaq0';
-    const API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${API_KEY}`;
+    const API_KEY = 'AIzaSyDhruu7C9KiOAAnhTzaUZstr_byFVElrUQ';
+    const API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${API_KEY}`;
 
     const response = await fetch(API_URL, {
       method: 'POST',
@@ -623,12 +623,12 @@ Use emojis, bullet points, and clear headings to make information easily digesti
             text: prompt
           }]
         }],
-        generationConfig: {
-          temperature: 0.7,
-          topK: 40,
-          topP: 0.95,
-          maxOutputTokens: 8192,
-        }
+        // generationConfig: {
+        //   temperature: 0.7,
+        //   topK: 40,
+        //   topP: 0.95,
+        //   maxOutputTokens: 8192,
+        // }
       })
     });
 
