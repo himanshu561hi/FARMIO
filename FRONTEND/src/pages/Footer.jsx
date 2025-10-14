@@ -1,5 +1,5 @@
 import React from 'react';
-import { FaInstagram, FaLinkedin, FaGithub, FaWhatsapp, FaArrowUp } from 'react-icons/fa';
+import { FaInstagram, FaLinkedin, FaWhatsapp, FaArrowUp } from 'react-icons/fa';
 import { Link } from 'react-router-dom';
 
 const Footer = () => {
@@ -53,11 +53,7 @@ const Footer = () => {
               href: "https://www.linkedin.com/in/amangupta9454",
               icon: <FaLinkedin />,
               color: "text-blue-400"
-            }, {
-              href: "https://github.com/amangupta9454",
-              icon: <FaGithub />,
-              color: "text-white"
-            }, {
+            },  {
               href: "https://wa.me/919560472926",
               icon: <FaWhatsapp />,
               color: "text-green-400"
