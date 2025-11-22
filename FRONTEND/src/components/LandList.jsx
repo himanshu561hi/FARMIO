@@ -517,7 +517,7 @@ const LandList = () => {
             <img
               src={
                 images.length > 0
-                  ? `http://localhost:5001${images[currentImageIndex]}`
+                  ? `${images[currentImageIndex]}`
                   : "https://via.placeholder.com/500x300?text=No+Image"
               }
               style={styles.slideImg}
