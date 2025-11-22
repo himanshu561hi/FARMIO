@@ -204,7 +204,7 @@ const LandList = () => {
     });
   };
 
-  // --- STYLES ---
+  // --- STYLES ---//////////
   const styles = {
     container: {
       maxWidth: "1200px",
@@ -638,9 +638,9 @@ const LandList = () => {
                         `https://www.google.com/maps/dir/?api=1&destination=${land.coordinates.lat},${land.coordinates.lng}`,
                         "_blank"
                       )
-                    }
+                    }///
                   >
-                    🗺️ Open Navigation
+                    🗺️ Open Navigation in map
                   </button>
                 </>
               ) : (
