@@ -11,6 +11,7 @@ const chatRoutes = require('./routes/chats');
 const adminRoutes = require('./routes/admin');
 const priceRoutes = require('./routes/prices');
 const cron = require('./cronJob');
+const diseaseRoutes = require('./routes/diseaseRoutes');
 
 const app = express();
 const server = http.createServer(app);
@@ -22,12 +23,16 @@ app.use(cors());
 app.use(express.json());
 app.use('/uploads', express.static(path.join(__dirname, 'Uploads')));
 
-app.use('/api/users', userRoutes);
+// app.use('/api/users', userRoutes);
+app.use('/api/users', require('./routes/users'));
 app.use('/api/listings', listingRoutes);
 app.use('/api/orders', orderRoutes);
 app.use('/api/chats', chatRoutes);
 app.use('/api/admin', adminRoutes);
 app.use('/api/prices', priceRoutes);
+app.use('/uploads', express.static(path.join(__dirname, 'public/uploads')));
+app.use('/api/lands', require('./routes/lands'));
+app.use('/api/disease', diseaseRoutes);
 
 io.on('connection', (socket) => {
   socket.on('joinChat', ({ listingId, userId }) => {
