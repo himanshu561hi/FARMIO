@@ -754,7 +754,7 @@ const LandList = () => {
               <img
                 src={
                   land.images?.[0]
-                    ? `http://localhost:5001${land.images[0]}`
+                    ? `${land.images[0]}`
                     : "https://via.placeholder.com/300x200"
                 }
                 alt={land.title}
