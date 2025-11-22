@@ -640,7 +640,7 @@ const LandList = () => {
                       )
                     }
                   >
-                    🗺️ Open Navigation
+                    🗺️ Open Navigation on Maps
                   </button>
                 </>
               ) : (
