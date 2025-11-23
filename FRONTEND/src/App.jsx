@@ -32,7 +32,7 @@ import DiseaseHistory from "./components/DiseaseHistory";
 import About from "./pages/About";
 import Disclaimer from "./pages/Disclaimer";
 import PrivacyPolicy from "./pages/PrivacyPolicy";
-
+import Chatbot from './pages/Chatbot';
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
@@ -88,6 +88,7 @@ const App = () => {
           <Route path="/about" element={<About />} />
           <Route path="/disclaimer" element={<Disclaimer />} />
           <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+          <Route path="/chatbot" element={<Chatbot />} />
           <Route
             path="/farmer"
             element={
