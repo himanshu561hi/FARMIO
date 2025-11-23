@@ -12,6 +12,7 @@ const adminRoutes = require('./routes/admin');
 const priceRoutes = require('./routes/prices');
 const cron = require('./cronJob');
 const diseaseRoutes = require('./routes/diseaseRoutes');
+const chatbotRoutes = require('./routes/chatbotRoutes');
 
 const app = express();
 const server = http.createServer(app);
@@ -33,6 +34,7 @@ app.use('/api/prices', priceRoutes);
 app.use('/uploads', express.static(path.join(__dirname, 'public/uploads')));
 app.use('/api/lands', require('./routes/lands'));
 app.use('/api/disease', diseaseRoutes);
+app.use('/api/chatbot', chatbotRoutes);
 
 io.on('connection', (socket) => {
   socket.on('joinChat', ({ listingId, userId }) => {
