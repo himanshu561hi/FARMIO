@@ -273,11 +273,13 @@ cloudinary.config({
 });
 
 const transporter = nodemailer.createTransport({
-  service: 'gmail',
-  auth: {
-    user: process.env.EMAIL_USER,
-    pass: process.env.EMAIL_PASS,
-  },
+  host: 'smtp.gmail.com',
+    port: 587, // STARTTLS के लिए 587 का उपयोग करें
+    secure: false, // port 587 के लिए इसे false रखें
+    auth: {
+        user: process.env.EMAIL_USER, // ag0567688@gmail.com
+        pass: process.env.EMAIL_PASS, // आपका नया App Password
+    },
 });
 
 const generateOtp = () => {
