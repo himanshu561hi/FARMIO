@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import axios from 'axios';
+import { BACKEND_URL } from '../config';
 
 const LandContactModal = ({ land, onClose }) => {
   const [formData, setFormData] = useState({
@@ -21,7 +22,7 @@ const LandContactModal = ({ land, onClose }) => {
     setStatus(null);
 
     try {
-      await axios.post(`http://localhost:5001/api/lands/${land._id}/contact`, formData, {
+      await axios.post(`${BACKEND_URL}/api/lands/${land._id}/contact`, formData, {
         headers: { 
             Authorization: localStorage.getItem('token') ? `Bearer ${localStorage.getItem('token')}` : '' 
         }
