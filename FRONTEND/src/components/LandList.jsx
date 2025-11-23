@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import LandMap from "./LandMap";
@@ -834,9 +835,12 @@ const LandList = () => {
       <ToastContainer style={{ zIndex: 100000 }} />
 
       <div className="header-section">
-        <h2 className="header">Featured Lands</h2>
+        <div className="header-decoration pt-5">
+          <span className="crop-icon">🌾</span>
+        </div>
+        <h2 className="header">Discover Agricultural Lands</h2>
         <p className="subheader">
-          Find your perfect plot or list your own.
+          Find your perfect farmland or list your agricultural property
         </p>
       </div>
 
@@ -970,26 +974,51 @@ const LandList = () => {
           margin: 0 auto;
           padding: 2rem;
           font-family: 'Poppins', sans-serif;
+          background: linear-gradient(180deg, #f0fdf4 0%, #ffffff 100%);
+          min-height: 100vh;
         }
 
         .header-section {
           text-align: center;
-          margin-bottom: 2.5rem;
-          margin-top: 5rem;
+          margin-bottom: 3.5rem;
+          margin-top: 2rem;
+          position: relative;
+        }
+
+        .header-decoration {
+          display: flex;
+          justify-content: center;
+          margin-bottom: 1rem;
+          animation: sway 3s ease-in-out infinite;
+        }
+
+        .crop-icon {
+          font-size: 3.5rem;
+          filter: drop-shadow(0 4px 6px rgba(22, 163, 74, 0.2));
+        }
+
+        @keyframes sway {
+          0%, 100% { transform: rotate(0deg); }
+          50% { transform: rotate(5deg); }
         }
 
         .header {
-          color: #1e293b;
+          color: #15803d;
           font-size: 2.8rem;
           font-weight: 800;
           margin-bottom: 10px;
           letter-spacing: -0.5px;
+          background: linear-gradient(135deg, #15803d 0%, #22c55e 100%);
+          -webkit-background-clip: text;
+          -webkit-text-fill-color: transparent;
+          background-clip: text;
         }
 
         .subheader {
-          color: #64748b;
+          color: #6b7280;
           font-size: 1.1rem;
           margin: 0;
+          font-weight: 500;
         }
 
         .action-bar {
@@ -998,28 +1027,48 @@ const LandList = () => {
           justify-content: center;
           gap: 15px;
           margin-bottom: 40px;
-          padding: 20px;
-          background-color: #ffffff;
-          border-radius: 20px;
-          box-shadow: 0 4px 20px rgba(0,0,0,0.06);
-          border: 1px solid #e2e8f0;
+          padding: 25px;
+          background: linear-gradient(135deg, #ffffff 0%, #f0fdf4 100%);
+          border-radius: 24px;
+          box-shadow: 0 8px 24px rgba(22, 163, 74, 0.08);
+          border: 2px solid #dcfce7;
+          position: relative;
+          overflow: hidden;
+        }
+
+        .action-bar::before {
+          content: '';
+          position: absolute;
+          top: -50%;
+          right: -50%;
+          width: 200px;
+          height: 200px;
+          background: radial-gradient(circle, rgba(34, 197, 94, 0.05) 0%, transparent 70%);
+          border-radius: 50%;
+          pointer-events: none;
         }
 
         .search-input {
           padding: 14px 24px;
           font-size: 1rem;
-          border: 2px solid #f1f5f9;
+          border: 2px solid #dcfce7;
           border-radius: 50px;
           width: 100%;
           max-width: 350px;
           outline: none;
           transition: all 0.3s;
-          background-color: #f8fafc;
+          background-color: white;
+          color: #1f2937;
+        }
+
+        .search-input::placeholder {
+          color: #9ca3af;
         }
 
         .search-input:focus {
-          border-color: #3b82f6;
+          border-color: #22c55e;
           background-color: white;
+          box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.1);
         }
 
         .btn {
@@ -1032,60 +1081,93 @@ const LandList = () => {
           display: flex;
           align-items: center;
           gap: 8px;
-          transition: all 0.2s;
-          box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+          transition: all 0.3s;
+          box-shadow: 0 4px 12px rgba(0,0,0,0.08);
           white-space: nowrap;
+          position: relative;
+          overflow: hidden;
+        }
+
+        .btn::before {
+          content: '';
+          position: absolute;
+          top: 50%;
+          left: 50%;
+          width: 0;
+          height: 0;
+          border-radius: 50%;
+          background: rgba(255, 255, 255, 0.3);
+          transform: translate(-50%, -50%);
+          transition: width 0.6s, height 0.6s;
+        }
+
+        .btn:hover::before {
+          width: 300px;
+          height: 300px;
         }
 
         .btn-primary {
-          background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+          background: linear-gradient(135deg, #16a34a 0%, #15803d 100%);
           color: white;
         }
 
         .btn-primary:hover {
-          transform: translateY(-2px);
-          box-shadow: 0 6px 12px rgba(16, 185, 129, 0.3);
+          transform: translateY(-3px);
+          box-shadow: 0 8px 20px rgba(22, 163, 74, 0.4);
         }
 
         .btn-secondary {
-          background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+          background: linear-gradient(135deg, #4f46e5 0%, #4338ca 100%);
           color: white;
         }
 
         .btn-secondary:hover {
-          transform: translateY(-2px);
-          box-shadow: 0 6px 12px rgba(59, 130, 246, 0.3);
+          transform: translateY(-3px);
+          box-shadow: 0 8px 20px rgba(79, 70, 229, 0.4);
         }
 
         .btn-outline {
           background: white;
-          color: #64748b;
-          border: 1px solid #cbd5e1;
+          color: #16a34a;
+          border: 2px solid #86efac;
+          font-weight: 700;
         }
 
         .btn-outline:hover {
-          background-color: #f8fafc;
+          background-color: #f0fdf4;
+          border-color: #16a34a;
         }
 
         .btn-sell {
           margin-left: auto;
+          position: relative;
+          z-index: 1;
         }
 
         .loading-text {
           text-align: center;
           font-size: 1.2rem;
-          color: #64748b;
+          color: #6b7280;
           padding: 40px;
+          animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+        }
+
+        @keyframes pulse {
+          0%, 100% { opacity: 1; }
+          50% { opacity: 0.5; }
         }
 
         .no-results {
           text-align: center;
-          padding: 40px;
+          padding: 60px 40px;
+          background: linear-gradient(135deg, #f0fdf4 0%, #ecfdf5 100%);
+          border-radius: 24px;
+          border: 2px dashed #dcfce7;
         }
 
         .no-results p {
           font-size: 1.5rem;
-          color: #94a3b8;
+          color: #6b7280;
           margin: 0;
         }
 
@@ -1093,84 +1175,119 @@ const LandList = () => {
           display: grid;
           grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
           gap: 2.5rem;
+          animation: fadeInUp 0.6s ease-out;
+        }
+
+        @keyframes fadeInUp {
+          from {
+            opacity: 0;
+            transform: translateY(20px);
+          }
+          to {
+            opacity: 1;
+            transform: translateY(0);
+          }
         }
 
         .land-card {
-          background-color: #fff;
+          background: white;
           border-radius: 20px;
-          box-shadow: 0 10px 30px rgba(0,0,0,0.04);
+          box-shadow: 0 4px 20px rgba(22, 163, 74, 0.08);
           overflow: hidden;
-          transition: transform 0.3s ease, box-shadow 0.3s ease;
+          transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
           display: flex;
           flex-direction: column;
-          border: 1px solid #f1f5f9;
+          border: 2px solid #e5e7eb;
           position: relative;
+          background: linear-gradient(135deg, #ffffff 0%, #f0fdf4 100%);
         }
 
         .land-card:not(.land-card-sold):hover {
-          transform: translateY(-5px);
-          box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+          transform: translateY(-12px) scale(1.02);
+          box-shadow: 0 20px 40px rgba(22, 163, 74, 0.2);
+          border-color: #86efac;
         }
 
         .land-card-sold {
-          opacity: 0.8;
-          filter: grayscale(100%);
+          opacity: 0.7;
+          filter: grayscale(60%);
         }
 
         .card-image-wrapper {
           overflow: hidden;
           height: 220px;
           position: relative;
+          background: linear-gradient(135deg, #e5e7eb 0%, #f3f4f6 100%);
+        }
+
+        .card-image-wrapper::after {
+          content: '';
+          position: absolute;
+          inset: 0;
+          background: linear-gradient(180deg, transparent 40%, rgba(22, 163, 74, 0.1) 100%);
+          pointer-events: none;
         }
 
         .sold-badge {
           position: absolute;
           top: 15px;
           right: 15px;
-          background-color: #ef4444;
+          background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
           color: white;
-          padding: 6px 14px;
-          border-radius: 20px;
+          padding: 8px 16px;
+          border-radius: 50px;
           font-size: 0.85rem;
           font-weight: bold;
           z-index: 10;
-          box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+          box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
+          text-transform: uppercase;
+          letter-spacing: 0.5px;
         }
 
         .card-image {
           width: 100%;
           height: 100%;
           object-fit: cover;
+          transition: transform 0.4s ease;
+        }
+
+        .land-card:hover .card-image {
+          transform: scale(1.08);
         }
 
         .card-content {
           padding: 1.5rem;
           display: flex;
           flex-direction: column;
-          gap: 0.8rem;
+          gap: 1rem;
           flex-grow: 1;
         }
 
         .card-title {
           font-size: 1.25rem;
           font-weight: 700;
-          color: #1e293b;
+          color: #1f2937;
           margin: 0;
+          line-height: 1.4;
         }
 
         .card-price {
-          color: #10b981;
-          font-size: 1.4rem;
+          background: linear-gradient(135deg, #16a34a 0%, #15803d 100%);
+          -webkit-background-clip: text;
+          -webkit-text-fill-color: transparent;
+          background-clip: text;
+          font-size: 1.5rem;
           font-weight: 800;
           margin: 0;
         }
 
         .card-location {
-          color: #64748b;
+          color: #6b7280;
           font-size: 0.95rem;
           display: flex;
           align-items: center;
-          gap: 5px;
+          gap: 8px;
+          font-weight: 500;
         }
 
         .card-tags {
@@ -1181,42 +1298,47 @@ const LandList = () => {
         }
 
         .card-tag {
-          font-size: 0.85rem;
-          background-color: #e0f2fe;
-          color: #0369a1;
+          font-size: 0.8rem;
+          background: linear-gradient(135deg, #dcfce7 0%, #bbf7d0 100%);
+          color: #15803d;
           padding: 6px 12px;
           border-radius: 20px;
           font-weight: 600;
-          border: 1px solid #bae6fd;
+          border: 1px solid #86efac;
         }
 
         .card-more-tags {
           font-size: 0.8rem;
-          color: #94a3b8;
+          color: #9ca3af;
         }
 
         .view-btn {
           width: 100%;
           padding: 16px;
-          background-color: #f8fafc;
-          color: #334155;
+          background: linear-gradient(135deg, #f0fdf4 0%, #ecfdf5 100%);
+          color: #15803d;
           border: none;
-          border-top: 1px solid #e2e8f0;
+          border-top: 2px solid #dcfce7;
           font-size: 1rem;
-          font-weight: 600;
+          font-weight: 700;
           cursor: pointer;
           margin-top: auto;
-          transition: background 0.2s;
+          transition: all 0.3s;
+          text-transform: uppercase;
+          letter-spacing: 0.5px;
+          font-size: 0.95rem;
         }
 
         .view-btn:hover {
-          background-color: #e2e8f0;
+          background: linear-gradient(135deg, #dcfce7 0%, #bbf7d0 100%);
+          color: #15803d;
         }
 
         .view-btn-sold {
-          background-color: #cbd5e1;
-          color: #64748b;
+          background-color: #f3f4f6;
+          color: #9ca3af;
           cursor: not-allowed;
+          border-top-color: #e5e7eb;
         }
 
         .contact-modal-overlay {
@@ -1225,8 +1347,8 @@ const LandList = () => {
           left: 0;
           right: 0;
           bottom: 0;
-          background-color: rgba(15, 23, 42, 0.8);
-          backdrop-filter: blur(5px);
+          background: linear-gradient(135deg, rgba(15, 23, 42, 0.85) 0%, rgba(15, 23, 42, 0.95) 100%);
+          backdrop-filter: blur(8px);
           display: flex;
           justify-content: center;
           align-items: center;
@@ -1235,43 +1357,49 @@ const LandList = () => {
         }
 
         .contact-modal-content {
-          background-color: white;
+          background: linear-gradient(135deg, #ffffff 0%, #f0fdf4 100%);
           padding: 2.5rem;
-          border-radius: 20px;
+          border-radius: 24px;
           max-width: 500px;
           width: 100%;
           position: relative;
-          box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+          box-shadow: 0 25px 50px -12px rgba(22, 163, 74, 0.25);
+          border: 2px solid #dcfce7;
         }
 
         .contact-modal-close {
           position: absolute;
           top: 15px;
           right: 15px;
-          width: 35px;
-          height: 35px;
-          font-size: 1.2rem;
-          background: #f1f5f9;
-          color: #334155;
-          border: none;
+          width: 40px;
+          height: 40px;
+          font-size: 1.5rem;
+          background: #f0fdf4;
+          color: #15803d;
+          border: 2px solid #dcfce7;
           border-radius: 50%;
           cursor: pointer;
           display: flex;
           align-items: center;
           justify-content: center;
-          transition: all 0.2s;
+          transition: all 0.3s;
+          font-weight: bold;
         }
 
         .contact-modal-close:hover {
-          background: #e2e8f0;
-          transform: scale(1.1);
+          background: #dcfce7;
+          transform: rotate(90deg);
         }
 
         .contact-modal-title {
           text-align: center;
           margin-top: 0;
-          color: #1e293b;
+          background: linear-gradient(135deg, #15803d 0%, #22c55e 100%);
+          -webkit-background-clip: text;
+          -webkit-text-fill-color: transparent;
+          background-clip: text;
           font-size: 1.8rem;
+          font-weight: 800;
         }
 
         @media (max-width: 768px) {
@@ -1280,7 +1408,7 @@ const LandList = () => {
           }
 
           .header-section {
-            margin-top: 5rem;
+            margin-top: 2rem;
             margin-bottom: 2rem;
           }
 
@@ -1290,6 +1418,10 @@ const LandList = () => {
 
           .subheader {
             font-size: 1rem;
+          }
+
+          .crop-icon {
+            font-size: 2.5rem;
           }
 
           .action-bar {
@@ -1345,7 +1477,7 @@ const LandList = () => {
           }
 
           .card-price {
-            font-size: 1.2rem;
+            font-size: 1.3rem;
           }
         }
       `}</style>
