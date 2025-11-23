@@ -4,6 +4,7 @@ import LandMap from "./LandMap";
 import LandContactModal from "./LandContactModal";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { BACKEND_URL } from '../config';
 
 // --- HELPER: Distance Calculation (Logic Same) ---
 const getDistanceFromLatLonInKm = (lat1, lon1, lat2, lon2) => {
