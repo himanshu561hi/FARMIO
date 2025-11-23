@@ -19,7 +19,11 @@ const io = socketIo(server, { cors: { origin: '*' } });
 
 connectDB();
 
-app.use(cors("*"));
+//app.use(cors("*"));
+app.use(cors({
+  origin: ['https://agrifarmio.netlify.app', 'https://localhost:5173'], // Netlify URL add करो
+  credentials: true // अगर auth cookies हैं तो
+}));
 app.use(express.json());
 app.use('/uploads', express.static(path.join(__dirname, 'Uploads')));
 
