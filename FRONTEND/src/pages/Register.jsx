@@ -320,24 +320,31 @@
 // export default Register;
 //Aman ka code
 
-
-
-import React, { useState } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
-import { sendOtp, verifyOtp, register } from '../utils/api';
-import { FaEnvelope, FaLock, FaUser, FaTractor, FaMapMarkerAlt, FaImage, FaCheckCircle, FaSpinner } from 'react-icons/fa';
-import bgImage from '../assets/12.jpg'; // Import the background image
+import React, { useState } from "react";
+import { useNavigate, Link } from "react-router-dom";
+import { sendOtp, verifyOtp, register } from "../utils/api";
+import {
+  FaEnvelope,
+  FaLock,
+  FaUser,
+  FaTractor,
+  FaMapMarkerAlt,
+  FaImage,
+  FaCheckCircle,
+  FaSpinner,
+} from "react-icons/fa";
+import bgImage from "../assets/12.jpg"; // Import the background image
 
 const Register = () => {
   const navigate = useNavigate();
-  const [step, setStep] = useState('email'); // 'email', 'otp', 'form'
+  const [step, setStep] = useState("email"); // 'email', 'otp', 'form'
   const [formData, setFormData] = useState({
-    email: '',
-    otp: '',
-    name: '',
-    password: '',
-    role: 'consumer',
-    location: '',
+    email: "",
+    otp: "",
+    name: "",
+    password: "",
+    role: "consumer",
+    location: "",
     profileImage: null,
   });
   const [error, setError] = useState(null);
@@ -347,7 +354,7 @@ const Register = () => {
   // --- LOGIC REMAINS UNCHANGED ---
   const handleChange = (e) => {
     const { name, value, files } = e.target;
-    if (name === 'profileImage') {
+    if (name === "profileImage") {
       setFormData({ ...formData, profileImage: files[0] });
     } else {
       setFormData({ ...formData, [name]: value });
@@ -359,10 +366,10 @@ const Register = () => {
     setLoading(true);
     try {
       await sendOtp({ email: formData.email });
-      setStep('otp');
+      setStep("otp");
       setError(null);
     } catch (error) {
-      setError(error.response?.data?.message || 'Failed to send OTP.');
+      setError(error.response?.data?.message || "Failed to send OTP.");
     } finally {
       setLoading(false);
     }
@@ -373,10 +380,10 @@ const Register = () => {
     setLoading(true);
     try {
       await verifyOtp({ email: formData.email, otp: formData.otp });
-      setStep('form');
+      setStep("form");
       setError(null);
     } catch (error) {
-      setError(error.response?.data?.message || 'Invalid or expired OTP.');
+      setError(error.response?.data?.message || "Invalid or expired OTP.");
     } finally {
       setLoading(false);
     }
@@ -387,20 +394,20 @@ const Register = () => {
     setLoading(true);
     try {
       const data = new FormData();
-      data.append('name', formData.name);
-      data.append('email', formData.email);
-      data.append('password', formData.password);
-      data.append('role', formData.role);
-      data.append('location', formData.location);
-      data.append('otp', formData.otp);
+      data.append("name", formData.name);
+      data.append("email", formData.email);
+      data.append("password", formData.password);
+      data.append("role", formData.role);
+      data.append("location", formData.location);
+      data.append("otp", formData.otp);
       if (formData.profileImage) {
-        data.append('profileImage', formData.profileImage);
+        data.append("profileImage", formData.profileImage);
       }
       await register(data);
-      alert('Registration successful! Please log in.');
-      navigate('/login');
+      alert("Registration successful! Please log in.");
+      navigate("/login");
     } catch (error) {
-      setError(error.response?.data?.message || 'Registration failed.');
+      setError(error.response?.data?.message || "Registration failed.");
     } finally {
       setLoading(false);
     }
@@ -409,32 +416,48 @@ const Register = () => {
 
   // Helper for UI steps
   const renderStepIndicator = () => {
-    const steps = ['email', 'otp', 'form'];
+    const steps = ["email", "otp", "form"];
     const current = steps.indexOf(step);
-    
+
     return (
       <div className="flex justify-center items-center gap-4 mb-8">
         {steps.map((s, index) => (
           <div key={s} className="flex flex-col items-center">
-            <div className={`w-10 h-10 rounded-full flex items-center justify-center text-white font-bold transition-all duration-300 ${index <= current ? 'bg-green-600' : 'bg-gray-700/50 border border-gray-600'}`}>
-              {index < current ? <FaCheckCircle className="text-sm" /> : index + 1}
+            <div
+              className={`w-10 h-10 rounded-full flex items-center justify-center text-white font-bold transition-all duration-300 ${
+                index <= current
+                  ? "bg-green-600"
+                  : "bg-gray-700/50 border border-gray-600"
+              }`}
+            >
+              {index < current ? (
+                <FaCheckCircle className="text-sm" />
+              ) : (
+                index + 1
+              )}
             </div>
-            <p className={`text-xs mt-1 transition-colors ${index <= current ? 'text-green-300 font-medium' : 'text-gray-500'}`}>
-              {s === 'email' ? 'Email' : s === 'otp' ? 'OTP' : 'Details'}
+            <p
+              className={`text-xs mt-1 transition-colors ${
+                index <= current
+                  ? "text-green-300 font-medium"
+                  : "text-gray-500"
+              }`}
+            >
+              {s === "email" ? "Email" : s === "otp" ? "OTP" : "Details"}
             </p>
           </div>
         ))}
       </div>
     );
   };
-  
+
   // Custom styles for input autofill issue fix (prevents white background)
   const customStyles = {
     autofillFix: {
-      WebkitBoxShadow: '0 0 0 1000px #0f172a inset',
-      WebkitTextFillColor: 'white',
-      caretColor: 'white'
-    }
+      WebkitBoxShadow: "0 0 0 1000px #0f172a inset",
+      WebkitTextFillColor: "white",
+      caretColor: "white",
+    },
   };
 
   return (
@@ -446,19 +469,26 @@ const Register = () => {
       <div className="absolute inset-0 bg-black/60 backdrop-blur-[3px] z-0"></div>
 
       {/* Animated Orbs */}
-      <div className="absolute top-1/4 left-1/4 w-72 h-72 bg-green-500/20 rounded-full blur-[100px] animate-pulse z-0" style={{ animationDelay: '0s' }}></div>
-      <div className="absolute bottom-1/4 right-1/4 w-72 h-72 bg-emerald-500/20 rounded-full blur-[100px] animate-pulse z-0" style={{ animationDelay: '1s' }}></div>
+      <div
+        className="absolute top-1/4 left-1/4 w-72 h-72 bg-green-500/20 rounded-full blur-[100px] animate-pulse z-0"
+        style={{ animationDelay: "0s" }}
+      ></div>
+      <div
+        className="absolute bottom-1/4 right-1/4 w-72 h-72 bg-emerald-500/20 rounded-full blur-[100px] animate-pulse z-0"
+        style={{ animationDelay: "1s" }}
+      ></div>
 
       {/* --- MAIN CARD --- */}
       <div className="relative z-10 w-full max-w-md bg-slate-900/70 border border-green-500/30 backdrop-blur-xl rounded-3xl shadow-2xl p-6 sm:p-8 md:p-10 transform transition-all">
-        
         {/* Header Icon */}
         <div className="text-center mb-8">
-            <div className="inline-block w-16 h-16 bg-gradient-to-br from-green-400 to-emerald-600 rounded-full flex items-center justify-center shadow-lg shadow-green-500/40 mb-3">
-                <FaTractor className="text-white text-2xl animate-bounce-slow" />
-            </div>
-            <h2 className="text-3xl font-extrabold text-white tracking-wide mb-1">Join the Green Revolution</h2>
-            <p className="text-sm text-gray-400">Register in 3 easy steps</p>
+          <div className="inline-block w-16 h-16 bg-gradient-to-br from-green-400 to-emerald-600 rounded-full flex items-center justify-center shadow-lg shadow-green-500/40 mb-3">
+            <FaTractor className="text-white text-3xl animate-bounce-slow block flex-shrink-0" />
+          </div>
+          <div className="text-3xl font-extrabold text-white tracking-wide mb-1">
+            Join the Green Revolution
+          </div>
+          <p className="text-sm text-gray-400">Register in 3 easy steps</p>
         </div>
 
         {/* Step Indicator */}
@@ -466,14 +496,17 @@ const Register = () => {
 
         {/* Error Message */}
         {error && (
-            <div className="mb-6 bg-red-500/10 border border-red-500/50 text-red-200 px-4 py-3 rounded-xl text-sm text-center">
-              {error}
-            </div>
-          )}
+          <div className="mb-6 bg-red-500/10 border border-red-500/50 text-red-200 px-4 py-3 rounded-xl text-sm text-center">
+            {error}
+          </div>
+        )}
 
         {/* --- STEP 1: EMAIL (SEND OTP) --- */}
-        {step === 'email' && (
-          <form onSubmit={handleEmailSubmit} className="space-y-6 animate-fade-in-up">
+        {step === "email" && (
+          <form
+            onSubmit={handleEmailSubmit}
+            className="space-y-6 animate-fade-in-up"
+          >
             <div className="relative group">
               <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
                 <FaEnvelope className="text-gray-400 group-focus-within:text-green-400 transition-colors" />
@@ -494,16 +527,19 @@ const Register = () => {
               className="w-full py-4 bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-400 hover:to-emerald-500 text-white font-bold rounded-xl shadow-lg shadow-green-500/20 transform transition-all duration-200 hover:scale-[1.02] active:scale-95 disabled:opacity-70 disabled:scale-100 flex justify-center items-center gap-2"
               disabled={loading}
             >
-              {loading ? <FaSpinner className="animate-spin" /> : 'Send OTP'}
+              {loading ? <FaSpinner className="animate-spin" /> : "Send OTP"}
             </button>
           </form>
         )}
 
         {/* --- STEP 2: OTP VERIFICATION --- */}
-        {step === 'otp' && (
-          <form onSubmit={handleOtpSubmit} className="space-y-6 animate-fade-in-up">
+        {step === "otp" && (
+          <form
+            onSubmit={handleOtpSubmit}
+            className="space-y-6 animate-fade-in-up"
+          >
             <div className="text-center text-sm text-green-300">
-                OTP sent to {formData.email}. Please check your inbox.
+              OTP sent to {formData.email}. Please check your inbox.
             </div>
             <div className="relative group">
               <input
@@ -522,11 +558,11 @@ const Register = () => {
               className="w-full py-4 bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-400 hover:to-emerald-500 text-white font-bold rounded-xl shadow-lg shadow-green-500/20 transform transition-all duration-200 hover:scale-[1.02] active:scale-95 disabled:opacity-70 disabled:scale-100 flex justify-center items-center gap-2"
               disabled={loading}
             >
-              {loading ? <FaSpinner className="animate-spin" /> : 'Verify OTP'}
+              {loading ? <FaSpinner className="animate-spin" /> : "Verify OTP"}
             </button>
             <button
               type="button"
-              onClick={() => setStep('email')}
+              onClick={() => setStep("email")}
               className="w-full text-green-400 hover:text-green-300 text-sm font-medium transition-colors"
             >
               ← Change Email
@@ -535,9 +571,11 @@ const Register = () => {
         )}
 
         {/* --- STEP 3: USER DETAILS FORM --- */}
-        {step === 'form' && (
-          <form onSubmit={handleFormSubmit} className="space-y-5 animate-fade-in-up">
-            
+        {step === "form" && (
+          <form
+            onSubmit={handleFormSubmit}
+            className="space-y-5 animate-fade-in-up"
+          >
             {/* Full Name */}
             <div className="relative group">
               <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
@@ -581,46 +619,59 @@ const Register = () => {
 
             {/* Role & Location Group */}
             <div className="grid grid-cols-2 gap-4">
-                {/* Role */}
-                <div>
-                    <label htmlFor="role" className="block text-xs font-medium text-gray-400 mb-1">
-                        I am a:
-                    </label>
-                    <select
-                      name="role"
-                      value={formData.role}
-                      onChange={handleChange}
-                      className="block w-full px-4 py-3 bg-slate-900/50 border border-gray-600 rounded-xl text-white focus:outline-none focus:border-green-500 transition-all"
-                      required
-                    >
-                      <option value="consumer" className="bg-slate-800">Consumer</option>
-                      <option value="farmer" className="bg-slate-800">Farmer</option>
-                    </select>
+              {/* Role */}
+              <div>
+                <label
+                  htmlFor="role"
+                  className="block text-xs font-medium text-gray-400 mb-1"
+                >
+                  I am a:
+                </label>
+                <select
+                  name="role"
+                  value={formData.role}
+                  onChange={handleChange}
+                  className="block w-full px-4 py-3 bg-slate-900/50 border border-gray-600 rounded-xl text-white focus:outline-none focus:border-green-500 transition-all"
+                  required
+                >
+                  <option value="consumer" className="bg-slate-800">
+                    Consumer
+                  </option>
+                  <option value="farmer" className="bg-slate-800">
+                    Farmer
+                  </option>
+                </select>
+              </div>
+
+              {/* Location */}
+              <div className="relative">
+                <label
+                  htmlFor="location"
+                  className="block text-xs font-medium text-gray-400 mb-1"
+                >
+                  Location (Optional)
+                </label>
+                <div className="absolute inset-y-0 left-0 pl-4 pt-6 flex items-center pointer-events-none">
+                  <FaMapMarkerAlt className="text-gray-400 text-sm" />
                 </div>
-                
-                {/* Location */}
-                <div className="relative">
-                    <label htmlFor="location" className="block text-xs font-medium text-gray-400 mb-1">
-                        Location (Optional)
-                    </label>
-                    <div className="absolute inset-y-0 left-0 pl-4 pt-6 flex items-center pointer-events-none">
-                       <FaMapMarkerAlt className="text-gray-400 text-sm" />
-                    </div>
-                    <input
-                      type="text"
-                      name="location"
-                      placeholder="City/State"
-                      value={formData.location}
-                      onChange={handleChange}
-                      style={customStyles.autofillFix}
-                      className="w-full pl-10 pr-4 py-3 bg-slate-900/50 border border-gray-600 rounded-xl text-white focus:outline-none focus:border-green-500 transition-all"
-                    />
-                </div>
+                <input
+                  type="text"
+                  name="location"
+                  placeholder="City/State"
+                  value={formData.location}
+                  onChange={handleChange}
+                  style={customStyles.autofillFix}
+                  className="w-full pl-10 pr-4 py-3 bg-slate-900/50 border border-gray-600 rounded-xl text-white focus:outline-none focus:border-green-500 transition-all"
+                />
+              </div>
             </div>
 
             {/* Profile Image */}
             <div className="pt-2">
-              <label htmlFor="profileImage" className="block text-xs font-medium text-gray-400 mb-2 flex items-center gap-2">
+              <label
+                htmlFor="profileImage"
+                className="block text-xs font-medium text-gray-400 mb-2 flex items-center gap-2"
+              >
                 <FaImage /> Profile Image (Optional)
               </label>
               <input
@@ -639,14 +690,21 @@ const Register = () => {
               className="w-full py-4 bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-400 hover:to-emerald-500 text-white font-bold rounded-xl shadow-lg shadow-green-500/20 transform transition-all duration-200 hover:scale-[1.02] active:scale-95 disabled:opacity-70 disabled:scale-100 flex justify-center items-center gap-2"
               disabled={loading}
             >
-              {loading ? <FaSpinner className="animate-spin" /> : 'Create Account'}
+              {loading ? (
+                <FaSpinner className="animate-spin" />
+              ) : (
+                "Create Account"
+              )}
             </button>
           </form>
         )}
 
         <p className="mt-6 text-center text-sm text-gray-400 border-t border-gray-700/50 pt-4">
-          Already registered?{' '}
-          <Link to="/login" className="font-bold text-green-400 hover:text-green-300 hover:underline transition-colors">
+          Already registered?{" "}
+          <Link
+            to="/login"
+            className="font-bold text-green-400 hover:text-green-300 hover:underline transition-colors"
+          >
             Sign in here
           </Link>
         </p>

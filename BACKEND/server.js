@@ -10,7 +10,6 @@ const orderRoutes = require('./routes/orders');
 const chatRoutes = require('./routes/chats');
 const adminRoutes = require('./routes/admin');
 const priceRoutes = require('./routes/prices');
-const cron = require('./cronJob');
 const diseaseRoutes = require('./routes/diseaseRoutes');
 const chatbotRoutes = require('./routes/chatbotRoutes');
 
