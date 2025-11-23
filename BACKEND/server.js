@@ -19,11 +19,10 @@ const io = socketIo(server, { cors: { origin: '*' } });
 
 connectDB();
 
-app.use(cors());
+app.use(cors("*"));
 app.use(express.json());
 app.use('/uploads', express.static(path.join(__dirname, 'Uploads')));
 
-// app.use('/api/users', userRoutes);
 app.use('/api/users', require('./routes/users'));
 app.use('/api/listings', listingRoutes);
 app.use('/api/orders', orderRoutes);
