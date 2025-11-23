@@ -230,8 +230,8 @@ const Product = () => {
             </div>
           </div>
         ) : products.length === 0 ? (
-          <p className="text-center text-white text-xl relative z-10 bg-gray-950/70 p-6 
-            rounded-xl max-w-md mx-auto shadow-2xl border border-gray-700/50 
+          <p className="text-center text-white text-2xl relative z-10 bg-gray-950/70 p-6 
+            rounded-xl max-w-6xl mx-auto shadow-2xl border border-gray-700/50 
             animate-fade-in select-text">
             No agricultural products are currently available.
           </p>

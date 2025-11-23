@@ -1,7 +1,45 @@
 const { GoogleGenerativeAI } = require("@google/generative-ai");
+const { v4: uuidv4 } = require('uuid');
 
 // API Key Config
+const ChatbotSession = require('../models/ChatbotSession');
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
+exports.saveGuestSession = async (req, res) => {
+    try {
+        const { messages, sessionId, userId } = req.body; // userId will be null for guests
+        
+        if (messages.length < 2) {
+            return res.status(400).json({ message: "Session too short to save." });
+        }
+        
+        // Find if an existing session exists for this ID
+        const existingSession = await ChatbotSession.findOne({ sessionId: sessionId });
+
+        if (existingSession) {
+            // Update existing session
+            existingSession.messages = messages;
+            await existingSession.save();
+        } else {
+            // Create new session
+            const newSession = new ChatbotSession({
+                user: userId || null, // Will be null for guests
+                sessionId: sessionId || uuidv4(), // Use provided ID or generate new one
+                messages: messages,
+            });
+            await newSession.save();
+        }
+
+        res.status(201).json({ 
+            message: "Session data updated successfully.", 
+            sessionId: sessionId 
+        });
+
+    } catch (error) {
+        console.error("Error saving guest session:", error);
+        res.status(500).json({ message: "Failed to save session.", error: error.message });
+    }
+};
+
 
 exports.chatWithBot = async (req, res) => {
   try {
