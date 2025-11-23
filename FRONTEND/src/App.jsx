@@ -27,11 +27,14 @@ import Ai from "./components/Ai";
 import Loan from "./components/Loan";
 import LandList from "./components/LandList";
 import ListLand from "./components/ListLand";
-import DiseaseScanner from './components/DiseaseScanner';
-import DiseaseHistory from './components/DiseaseHistory';
+import DiseaseScanner from "./components/DiseaseScanner";
+import DiseaseHistory from "./components/DiseaseHistory";
+import About from "./pages/About";
+import Disclaimer from "./pages/Disclaimer";
+import PrivacyPolicy from "./pages/PrivacyPolicy";
 
-import { ToastContainer } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const App = () => {
   const [user, setUser] = useState(null);
@@ -82,6 +85,9 @@ const App = () => {
           <Route path="/register" element={<Register />} />
           <Route path="/ai" element={<Ai />} />
           <Route path="/loan" element={<Loan />} />
+          <Route path="/about" element={<About />} />
+          <Route path="/disclaimer" element={<Disclaimer />} />
+          <Route path="/privacy-policy" element={<PrivacyPolicy />} />
           <Route
             path="/farmer"
             element={

@@ -123,7 +123,7 @@ const ListLand = () => {
     if (token) headers.Authorization = `Bearer ${token}`;
 
     try {
-      await axios.post('http://localhost:5001/api/lands/add', data, { headers });
+      await axios.post(`${BACKEND_URL}/api/lands/add`, data, { headers });
       
       toast.success('🚀 Land listed successfully!');
 

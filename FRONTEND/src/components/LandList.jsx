@@ -87,7 +87,7 @@ const LandList = () => {
   const fetchLands = () => {
     setLoading(true);
     axios
-      .get("http://localhost:5001/api/lands")
+      .get(`${BACKEND_URL}/api/lands`)
       .then((res) => {
         const landData = res.data.lands || res.data.data || res.data;
         let validData = Array.isArray(landData) ? landData : [];
