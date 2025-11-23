@@ -112,6 +112,9 @@ const Navbar = ({ user, setUser }) => {
                 <Link to="/contact" className="px-4 py-2 hover:bg-gray-800 hover:text-amber-400 transition block">
                   Contact Us
                 </Link>
+                <Link to="/about" className="px-4 py-2 hover:bg-gray-800 hover:text-amber-400 transition block">
+                  About Us
+                </Link>
               </>
             )}
           </NavDropdown>
