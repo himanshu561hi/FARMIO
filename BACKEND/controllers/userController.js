@@ -16,14 +16,13 @@ cloudinary.config({
 });
 
 const transporter = nodemailer.createTransport({
-  service: 'gmail',
-  host: 'smtp.gmail.com',
-  auth: {
-    user: process.env.EMAIL_USER,
-    pass: process.env.EMAIL_PASS,
-  },
-  port: 587,
-  secure: false,
+  service: 'SendGrid',
+    auth: {
+        // SendGrid API के लिए username हमेशा 'apikey' होता है
+        user: 'apikey', 
+        // Render Environment Variable से API Key लें
+        pass: process.env.SENDGRID_API_KEY, 
+    }
 });
 
 const generateOtp = () => {
