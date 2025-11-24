@@ -1,5 +1,4 @@
 
-
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const User = require('../models/User');
@@ -16,13 +15,11 @@ cloudinary.config({
 });
 
 const transporter = nodemailer.createTransport({
-  service: 'SendGrid',
-    auth: {
-        // SendGrid API के लिए username हमेशा 'apikey' होता है
-        user: 'apikey', 
-        // Render Environment Variable से API Key लें
-        pass: process.env.SENDGRID_API_KEY, 
-    }
+  service: 'gmail',
+  auth: {
+    user: process.env.EMAIL_USER,
+    pass: process.env.EMAIL_PASS,
+  },
 });
 
 const generateOtp = () => {
@@ -55,7 +52,7 @@ const sendOtp = async (req, res) => {  // Ensure async
 
     console.log('Step 4: Preparing email...');
     const mailOptions = {
-      from: 'himanshu561hi@gmail.com',
+      from: process.env.EMAIL_USER,
       to: email,
       subject: 'Email Verification OTP - Farmers Market',
       html: `
