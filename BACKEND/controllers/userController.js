@@ -282,8 +282,8 @@ cloudinary.config({
 
 const transporter = nodemailer.createTransport({
   host: 'smtp.gmail.com',
-  port: 587,  // Try 587 (STARTTLS) first, fallback 465 (SSL)
-  secure: false,  // true for 465
+  port: 465,  // Try 587 (STARTTLS) first, fallback 465 (SSL)
+  secure: true,  // true for 465
   auth: {
     user: process.env.EMAIL_USER,
     pass: process.env.EMAIL_PASS,
