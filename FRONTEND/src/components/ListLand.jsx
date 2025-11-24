@@ -12,6 +12,8 @@ const defaultCenter = { lat: 20.5937, lng: 78.9629 }; // Center of India
 
 const libraries = ['places'];
 
+const BACKEND_URL = import.meta.env.VITE_BACKEND_URL; // Ensure this is set in your .env file
+
 const ListLand = () => {
   const navigate = useNavigate(); 
 
