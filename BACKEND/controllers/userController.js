@@ -55,7 +55,7 @@ const sendOtp = async (req, res) => {  // Ensure async
 
     console.log('Step 4: Preparing email...');
     const mailOptions = {
-      from: process.env.EMAIL_USER,
+      from: 'himanshu561hi@gmail.com',
       to: email,
       subject: 'Email Verification OTP - Farmers Market',
       html: `
