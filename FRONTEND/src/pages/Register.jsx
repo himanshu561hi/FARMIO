@@ -1,8 +1,7 @@
-
-
 import React, { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { sendOtp, verifyOtp, register } from "../utils/api";
+import toast, { Toaster } from "react-hot-toast"; // ⬅️ UPDATED: Import toast and Toaster
 import {
   FaEnvelope,
   FaLock,
@@ -50,8 +49,13 @@ const Register = () => {
       await sendOtp({ email: formData.email });
       setStep("otp");
       setError(null);
+      // ⬅️ Toast Notification
+      toast.success("OTP sent successfully! Check your email.");
     } catch (error) {
-      setError(error.response?.data?.message || "Failed to send OTP.");
+      const errorMessage = error.response?.data?.message || "Failed to send OTP.";
+      setError(errorMessage);
+      // ⬅️ Toast Notification
+      toast.error(errorMessage);
     } finally {
       setLoading(false);
     }
@@ -64,8 +68,13 @@ const Register = () => {
       await verifyOtp({ email: formData.email, otp: formData.otp });
       setStep("form");
       setError(null);
+      // ⬅️ Toast Notification (Optional success message)
+      toast.success("OTP verified.");
     } catch (error) {
-      setError(error.response?.data?.message || "Invalid or expired OTP.");
+      const errorMessage = error.response?.data?.message || "Invalid or expired OTP.";
+      setError(errorMessage);
+      // ⬅️ Toast Notification
+      toast.error(errorMessage);
     } finally {
       setLoading(false);
     }
@@ -86,10 +95,16 @@ const Register = () => {
         data.append("profileImage", formData.profileImage);
       }
       await register(data);
-      alert("Registration successful! Please log in.");
+      
+      // ⬅️ CHANGE: alert() replaced with toast.success()
+      toast.success("Registration successful! Please log in.");
+      
       navigate("/login");
     } catch (error) {
-      setError(error.response?.data?.message || "Registration failed.");
+      const errorMessage = error.response?.data?.message || "Registration failed.";
+      setError(errorMessage);
+      // ⬅️ Toast Notification
+      toast.error(errorMessage);
     } finally {
       setLoading(false);
     }
@@ -147,6 +162,8 @@ const Register = () => {
       className="relative mt-15 flex items-center justify-center min-h-screen bg-cover bg-center bg-no-repeat px-4 sm:px-6 py-16"
       style={{ backgroundImage: `url(${bgImage})` }}
     >
+      <Toaster position="top-center" /> {/* ⬅️ Toaster component added */}
+      
       {/* Dark Overlay with Blur */}
       <div className="absolute inset-0 bg-black/60 backdrop-blur-[3px] z-0"></div>
 

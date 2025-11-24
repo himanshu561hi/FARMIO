@@ -150,8 +150,7 @@ const getOrders = async (req, res) => {
         const consumerDetails = await ConsumerDetails.findOne({ order: order._id }).lean();
         order.consumerDetails = consumerDetails || {};
       }
-    }
-    console.log('Returning orders:', orders); // Debug backend response
+    } // Debug backend response
     res.json(orders);
   } catch (error) {
     console.error('Error fetching orders:', error);
