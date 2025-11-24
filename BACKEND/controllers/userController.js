@@ -14,7 +14,7 @@ cloudinary.config({
   api_secret: process.env.CLOUDINARY_API_SECRET,
 });
 
-const transporter = nodemailer.createTransporter({
+const transporter = nodemailer.createTransport({
   host: 'smtp.gmail.com',
   port: 587,  // Try 587 (STARTTLS) first, fallback 465 (SSL)
   secure: false,  // true for 465
