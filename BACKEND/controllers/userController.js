@@ -272,12 +272,28 @@ cloudinary.config({
   api_secret: process.env.CLOUDINARY_API_SECRET,
 });
 
+// const transporter = nodemailer.createTransport({
+//   service: 'gmail',
+//   auth: {
+//     user: process.env.EMAIL_USER,
+//     pass: process.env.EMAIL_PASS,
+//   },
+// });
+
 const transporter = nodemailer.createTransport({
-  service: 'gmail',
+  host: 'smtp.gmail.com',
+  port: 587,  // Try 587 (STARTTLS) first, fallback 465 (SSL)
+  secure: false,  // true for 465
   auth: {
     user: process.env.EMAIL_USER,
     pass: process.env.EMAIL_PASS,
   },
+  tls: {
+    rejectUnauthorized: false  // For self-signed certs, but careful in prod
+  },
+  connectionTimeout: 30000,  // Increase to 30s
+  greetingTimeout: 30000,
+  socketTimeout: 30000,
 });
 
 const generateOtp = () => {
@@ -554,3 +570,5 @@ module.exports = {
   verifyResetOtp, 
   resetPassword 
 };
+
+
