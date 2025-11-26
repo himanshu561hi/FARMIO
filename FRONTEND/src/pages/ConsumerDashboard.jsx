@@ -58,7 +58,7 @@ const ConsumerDashboard = ({ user }) => {
         <div className="container max-w-5xl mx-auto p-4 sm:p-6 lg:p-12 pt-20 sm:pt-20 lg:pt-24 animate-fadeIn" aria-label={t('consumerDashboard.title')}>
           <header className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-4 sm:mb-6 lg:mb-8 relative" aria-labelledby="dashboard-title">
             <h2 id="dashboard-title" className="text-xl sm:text-2xl lg:text-3xl font-bold bg-gradient-to-r from-green-300 via-blue-300 to-yellow-300 text-transparent bg-clip-text text-center sm:text-left animate-gradient">
-              {t('consumerDashboard.title')}
+              {t('Consumer Dashboard')}
             </h2>
             <select
               onChange={(e) => changeLanguage(e.target.value)}
@@ -67,13 +67,13 @@ const ConsumerDashboard = ({ user }) => {
               aria-label={t('selectLanguage')}
               style={{ animationDelay: '200ms' }}
             >
-              <option value="en" className="text-black">{t('language.english')}</option>
-              <option value="hi" className="text-black">{t('language.hindi')}</option>
-              <option value="ta" className="text-black">{t('language.tamil')}</option>
-              <option value="bh" className="text-black">{t('language.bhojpuri')}</option>
-              <option value="mr" className="text-black">{t('language.marathi')}</option>
-              <option value="sa" className="text-black">{t('language.sanskrit')}</option>
-              <option value="bn" className="text-black">{t('language.bengali')}</option>
+              <option value="en" className="text-black">{t('English')}</option>
+              <option value="hi" className="text-black">{t('Hindi')}</option>
+              <option value="ta" className="text-black">{t('Tamil')}</option>
+              <option value="bh" className="text-black">{t('Bhojpuri')}</option>
+              <option value="mr" className="text-black">{t('Marathi')}</option>
+              <option value="sa" className="text-black">{t('Sanskrit')}</option>
+              <option value="bn" className="text-black">{t('Bengali')}</option>
             </select>
           </header>
           
@@ -82,11 +82,11 @@ const ConsumerDashboard = ({ user }) => {
 
           {/* Orders Section */}
           <h3 className="text-lg sm:text-xl lg:text-2xl font-bold bg-gradient-to-r from-green-300 via-blue-300 to-yellow-300 text-transparent bg-clip-text mb-4 sm:mb-6 lg:mb-8 mt-6 sm:mt-8 lg:mt-10 text-center animate-gradient" aria-label={t('consumerDashboard.orders')}>
-            {t('consumerDashboard.orders')}
+            {t('Orders')}
           </h3>
           {orders.length === 0 ? (
             <p className="text-center text-white text-xs sm:text-sm lg:text-base animate-pulse">
-              {t('consumerDashboard.noOrders')}
+              {t('No Orders')}
             </p>
           ) : (
             <div className="grid gap-4 sm:gap-6 lg:gap-8 lg:grid-cols-2">

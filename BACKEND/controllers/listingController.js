@@ -7,24 +7,84 @@ cloudinary.config({
   api_secret: process.env.CLOUDINARY_API_SECRET,
 });
 
+// const createListing = async (req, res) => {
+//   const { name, quantity, price, locationName, coordinates, category, manufactureDate, description, specifications } = req.body;
+//   try {
+//     if (req.user.role !== 'farmer') return res.status(403).json({ message: 'Only farmers can create listings' });
+    
+//     // Prevent duplicate submissions
+//     const recentListing = await Listing.findOne({
+//       name,
+//       farmer: req.user.id,
+//       createdAt: { $gte: new Date(Date.now() - 1000) },
+//     });
+//     if (recentListing) {
+//       return res.status(409).json({ message: 'Duplicate listing detected' });
+//     }
+
+//     let imageUrl = null;
+//     if (req.file) {
+//       // Upload image buffer directly from memory
+//       const result = await new Promise((resolve, reject) => {
+//         const stream = cloudinary.uploader.upload_stream(
+//           { folder: 'farmers-market', use_filename: true, unique_filename: false },
+//           (error, result) => {
+//             if (error) reject(error);
+//             else resolve(result);
+//           }
+//         );
+//         stream.end(req.file.buffer);
+//       });
+//       imageUrl = result.secure_url;
+//     }
+
+//     const listing = new Listing({
+//       name,
+//       quantity,
+//       price,
+//       location: coordinates ? { coordinates: JSON.parse(coordinates) } : undefined,
+//       locationName,
+//       image: imageUrl,
+//       farmer: req.user.id,
+//       category,
+//       manufactureDate,
+//       description,
+//       specifications,
+//     });
+
+//     await listing.save();
+//     res.status(201).json(listing);
+//   } catch (error) {
+//     console.error('Error creating listing:', error);
+//     res.status(500).json({ message: 'Error creating listing', error: error.message });
+//   }
+// };
+
+
+
 const createListing = async (req, res) => {
   const { name, quantity, price, locationName, coordinates, category, manufactureDate, description, specifications } = req.body;
+  
   try {
-    if (req.user.role !== 'farmer') return res.status(403).json({ message: 'Only farmers can create listings' });
+    // Safety Check: Ensure User Exists
+    if (!req.user || req.user.role !== 'farmer') {
+      return res.status(403).json({ message: 'Only farmers can create listings' });
+    }
     
-    // Prevent duplicate submissions
+    // Prevent duplicate submissions (Logic Same)
     const recentListing = await Listing.findOne({
       name,
       farmer: req.user.id,
       createdAt: { $gte: new Date(Date.now() - 1000) },
     });
+
     if (recentListing) {
       return res.status(409).json({ message: 'Duplicate listing detected' });
     }
 
     let imageUrl = null;
     if (req.file) {
-      // Upload image buffer directly from memory
+      // Upload image buffer directly from memory (Logic Same)
       const result = await new Promise((resolve, reject) => {
         const stream = cloudinary.uploader.upload_stream(
           { folder: 'farmers-market', use_filename: true, unique_filename: false },
@@ -45,7 +105,7 @@ const createListing = async (req, res) => {
       location: coordinates ? { coordinates: JSON.parse(coordinates) } : undefined,
       locationName,
       image: imageUrl,
-      farmer: req.user.id,
+      farmer: req.user.id, // ✅ Yahan ID save ho rahi hai (Sahi hai)
       category,
       manufactureDate,
       description,
@@ -53,7 +113,13 @@ const createListing = async (req, res) => {
     });
 
     await listing.save();
+
+    // ✅ NEW UPDATE HERE: 
+    // Data save hone ke baad usse 'populate' karein taaki frontend ko turant Name mil jaye
+    await listing.populate('farmer', 'name email location');
+
     res.status(201).json(listing);
+
   } catch (error) {
     console.error('Error creating listing:', error);
     res.status(500).json({ message: 'Error creating listing', error: error.message });

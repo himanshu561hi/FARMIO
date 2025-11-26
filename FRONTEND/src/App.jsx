@@ -34,7 +34,11 @@ import Disclaimer from "./pages/Disclaimer";
 import PrivacyPolicy from "./pages/PrivacyPolicy";
 import Chatbot from './pages/Chatbot';
 import { ToastContainer } from "react-toastify";
+import { Toaster } from 'react-hot-toast';
 import "react-toastify/dist/ReactToastify.css";
+import RentalMarketplace from './pages/RentalMarketplace';
+import AddRental from './pages/AddRental';
+import RentalDashboard from './pages/RentalDashboard';
 
 const App = () => {
   const [user, setUser] = useState(null);
@@ -65,7 +69,7 @@ const App = () => {
   return (
     <Router>
       <Navbar user={user} setUser={setUser} />
-      <ToastContainer position="top-right" autoClose={3000} />
+      <Toaster position="top-center" />
       <ErrorBoundary>
         <Routes>
           <Route
@@ -152,6 +156,9 @@ const App = () => {
           <Route path="/list-land" element={<ListLand />} />
           <Route path="/my-reports" element={<DiseaseHistory />} />
           <Route path="/scan-disease" element={<DiseaseScanner />} />
+          <Route path="/rental" element={<RentalMarketplace />} />
+          <Route path="/rental/add" element={<AddRental />} />
+          <Route path="/dashboard" element={<RentalDashboard />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </ErrorBoundary>

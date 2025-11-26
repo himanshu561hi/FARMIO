@@ -1,6 +1,7 @@
 import axios from 'axios';
 
 const api = axios.create({ baseURL: import.meta.env.VITE_API_URL });
+const API_URL = import.meta.env.VITE_API_URL;
 
 export const sendAdminOtp = (data) => api.post('/admin/send-otp', data);
 export const verifyAdminOtp = (data) => api.post('/admin/verify-otp', data);
@@ -47,3 +48,42 @@ export const verifyResetOtp = (data) => api.post('/users/verify-reset-otp', data
 export const resetPassword = (data) => api.post('/users/reset-password', data);
 export const getWeather = (data) => api.post('/weather', data);
 export const getPrices = (params) => api.get('/prices', { params });
+
+api.interceptors.request.use((req) => {
+  const token = localStorage.getItem('token'); // Check if key is 'token' or 'userInfo'
+  if (token) {
+    req.headers.Authorization = `Bearer ${token}`;
+  }
+  return req;
+});
+
+export const fetchRentals = () => api.get('/rentals/all');
+
+export const createRental = (rentalData) => 
+api.post('/rentals/add', rentalData, {
+  headers: { 'Content-Type': 'multipart/form-data' },
+});
+
+export const bookRental = (bookingData) => api.post('/rentals/book', bookingData);
+export const fetchMyBookings = () => api.get('/rentals/my-bookings');
+export const fetchMyListings = () => api.get('/rentals/my-listings');
+export const fetchIncomingRentalRequests = () => api.get('/rentals/requests-received');
+export const updateRentalStatus = (data) => api.put('/rentals/status', data);
+
+export const deleteRental = (id, token) => {
+  const url = `${API_URL}/rentals/delete/${id}`;
+  console.log("Deleting at URL:", url);
+  
+  return axios.delete(url, {
+    headers: { Authorization: `Bearer ${token}` }
+  });
+};
+
+export const toggleRentalStatus = (id, reason, token) => {
+  const url = `${API_URL}/rentals/toggle-status/${id}`;
+  console.log("Toggling at URL:", url);
+
+  return axios.put(url, { reason }, {
+    headers: { Authorization: `Bearer ${token}` }
+  });
+};

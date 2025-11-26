@@ -36,6 +36,7 @@ const Login = ({ setUser }) => {
       toast.success(`Welcome, ${data.user.name}! Logged in successfully.`);
       
       localStorage.setItem('token', data.token);
+      localStorage.setItem('user', JSON.stringify(data.user));
       setUser({ id: data.user.id, role: data.user.role, name: data.user.name });
       
       // Navigate ko toast ke theek baad call kiya

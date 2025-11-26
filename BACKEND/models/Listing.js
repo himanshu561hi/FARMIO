@@ -11,6 +11,11 @@ const ListingSchema = new mongoose.Schema({
   locationName: { type: String, required: true },
   image: { type: String, required: true },
   farmer: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
+  farmer: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User',
+    required: true
+  },
   createdAt: { type: Date, default: Date.now },
   category: { type: String, required: true },
   manufactureDate: { type: Date, required: true },

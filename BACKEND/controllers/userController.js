@@ -441,7 +441,7 @@ const resetPassword = async (req, res) => {
 // --- User/Auth Functions ---
 
 const register = async (req, res) => {
-  const { name, email, password, role, location, otp } = req.body;
+  const { name, email, password, phone, role, location, otp } = req.body;
   try {
     const otpRecord = await Otp.findOne({ email, otp });
     if (!otpRecord || otpRecord.expiresAt < new Date()) return res.status(400).json({ message: 'Invalid or expired OTP' });
@@ -469,6 +469,7 @@ const register = async (req, res) => {
       name,
       email,
       password: hashedPassword,
+      phone,
       role,
       location,
       profileImage: profileImageUrl,

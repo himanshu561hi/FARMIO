@@ -267,6 +267,9 @@ const Navbar = ({ user, setUser }) => {
             <Link to="/product" className="px-5 py-3 text-sm text-gray-200 hover:bg-green-800/50 hover:text-yellow-300 transition border-l-4 border-transparent hover:border-yellow-400 block">
               🚜 Agri Products
             </Link>
+            <Link to="/rental" className="px-5 py-3 text-sm text-gray-200 hover:bg-green-800/50 hover:text-yellow-300 transition border-l-4 border-transparent hover:border-yellow-400 block">
+              🏡 Rental Marketplace
+            </Link>
           </NavDropdown>
 
           {/* 4. Account / Auth */}
@@ -332,6 +335,7 @@ const Navbar = ({ user, setUser }) => {
           <div className="pt-6 pb-2 text-xs font-bold text-green-400 uppercase tracking-widest">Market</div>
           <Link to="/lands" className="block py-2 pl-4 text-gray-300 hover:text-white hover:bg-white/5 rounded-lg" onClick={() => setIsMenuOpen(false)}>Land Listing</Link>
           <Link to="/product" className="block py-2 pl-4 text-gray-300 hover:text-white hover:bg-white/5 rounded-lg" onClick={() => setIsMenuOpen(false)}>Agri Products</Link>
+          <Link to="/rental" className="block py-2 pl-4 text-gray-300 hover:text-white hover:bg-white/5 rounded-lg" onClick={() => setIsMenuOpen(false)}>🏡 Rental Marketplace</Link>
 
           {/* Mobile Group: Account */}
           <div className="pt-6 pb-2 text-xs font-bold text-green-400 uppercase tracking-widest">Account</div>

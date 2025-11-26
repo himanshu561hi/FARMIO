@@ -12,6 +12,7 @@ const adminRoutes = require('./routes/admin');
 const priceRoutes = require('./routes/prices');
 const diseaseRoutes = require('./routes/diseaseRoutes');
 const chatbotRoutes = require('./routes/chatbotRoutes');
+const rentalRoutes = require('./routes/rentalRoutes');
 
 const app = express();
 const server = http.createServer(app);
@@ -22,8 +23,7 @@ connectDB();
 app.use(cors("*"));
 app.use(express.json());
 app.use('/uploads', express.static(path.join(__dirname, 'Uploads')));
-
-app.use('/api/users', require('./routes/users'));
+app.use('/api/users', userRoutes);
 app.use('/api/listings', listingRoutes);
 app.use('/api/orders', orderRoutes);
 app.use('/api/chats', chatRoutes);
@@ -33,6 +33,7 @@ app.use('/uploads', express.static(path.join(__dirname, 'public/uploads')));
 app.use('/api/lands', require('./routes/lands'));
 app.use('/api/disease', diseaseRoutes);
 app.use('/api/chatbot', chatbotRoutes);
+app.use('/api/rentals', rentalRoutes);
 
 io.on('connection', (socket) => {
   socket.on('joinChat', ({ listingId, userId }) => {
