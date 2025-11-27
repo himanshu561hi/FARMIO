@@ -98,27 +98,27 @@ const ConsumerDashboard = ({ user }) => {
                 >
                   <div className="space-y-2 sm:space-y-3 text-center sm:text-left">
                     <p className="text-xs sm:text-sm lg:text-base text-yellow-100">
-                      <strong className="text-white">{t('consumerDashboard.produce')}:</strong> {order.listing?.name || t('consumerDashboard.na')}
+                      <strong className="text-white">{t('Produce')}:</strong> {order.listing?.name || t('consumerDashboard.na')}
                     </p>
                     <p className="text-xs sm:text-sm lg:text-base text-yellow-100">
-                      <strong className="text-white">{t('consumerDashboard.quantity')}:</strong> {order.quantity} kg
+                      <strong className="text-white">{t('Quantity')}:</strong> {order.quantity} kg
                     </p>
                     <p className="text-xs sm:text-sm lg:text-base text-yellow-100">
-                      <strong className="text-white">{t('consumerDashboard.totalPrice')}:</strong> ₹{order.totalPrice}
+                      <strong className="text-white">{t('Total Price')}:</strong> ₹{order.totalPrice}
                     </p>
                     <p className="text-xs sm:text-sm lg:text-base text-yellow-100">
-                      <strong className="text-white">{t('consumerDashboard.status')}:</strong> {order.status}
+                      <strong className="text-white">{t('Status')}:</strong> {order.status}
                     </p>
                     {order.status === 'rejected' && order.rejectionMessage && (
                       <p className="text-xs sm:text-sm lg:text-base text-yellow-100">
-                        <strong className="text-white">{t('consumerDashboard.rejectionReason')}:</strong> {order.rejectionMessage}
+                        <strong className="text-white">{t('Rejection Reason')}:</strong> {order.rejectionMessage}
                       </p>
                     )}
                     <p className="text-xs sm:text-sm lg:text-base text-yellow-100">
-                      <strong className="text-white">{t('consumerDashboard.paymentId')}:</strong> {order.paymentDetails?.razorpayPaymentId || t('consumerDashboard.pending')}
+                      <strong className="text-white">{t('Payment Id')}:</strong> {order.paymentDetails?.razorpayPaymentId || t('consumerDashboard.pending')}
                     </p>
                     <p className="text-xs sm:text-sm lg:text-base text-yellow-100">
-                      <strong className="text-white">{t('consumerDashboard.orderDate')}:</strong> {new Date(order.createdAt).toLocaleString()}
+                      <strong className="text-white">{t('Order Date')}:</strong> {new Date(order.createdAt).toLocaleString()}
                     </p>
                   </div>
                 </div>
