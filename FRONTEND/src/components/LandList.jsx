@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import LandMap from "./LandMap";
@@ -6,6 +5,7 @@ import LandContactModal from "./LandContactModal";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { BACKEND_URL } from '../config';
+import { Link } from "react-router-dom";
 
 const getDistanceFromLatLonInKm = (lat1, lon1, lat2, lon2) => {
   const R = 6371;
@@ -865,12 +865,11 @@ const LandList = () => {
             🔄 Reset
           </button>
         )}
-        <button
+        <Link to="/list-land"
           className="btn btn-primary btn-sell"
-          onClick={() => (window.location.href = "/list-land")}
         >
           ➕ Sell Your Land
-        </button>
+        </Link>
       </div>
 
       {loading && <p className="loading-text">Loading properties...</p>}
