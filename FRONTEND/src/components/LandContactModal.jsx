@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { FaTimes, FaUser, FaPhoneAlt, FaEnvelopeOpenText } from 'react-icons/fa';
+import { FaTimes, FaUser, FaPhoneAlt, FaInstagram, FaEnvelopeOpenText } from 'react-icons/fa';
 import toast from 'react-hot-toast';
 import { contactSeller } from '../utils/api'; // Assuming this API is now correctly defined
 
