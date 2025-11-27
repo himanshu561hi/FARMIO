@@ -90,7 +90,6 @@ const Login = ({ setUser }) => {
       className="relative mt-15 flex items-center justify-center min-h-screen bg-cover bg-center bg-no-repeat px-4 overflow-hidden" 
       style={{ backgroundImage: `url(${bgImage})` }}
     >
-      <Toaster position="top-center" /> 
 
       {/* Dark Overlay with Blur */}
       <div className="absolute inset-0 bg-black/60 backdrop-blur-[3px] z-0"></div>

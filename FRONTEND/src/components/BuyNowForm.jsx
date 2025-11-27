@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { getListingById, createOrder, verifyPayment } from '../utils/api';
 import backgroundImage from '../assets/4.jpg';
+import { toast } from 'react-hot-toast';
 
 const BuyNowForm = ({ user }) => {
   const { productId } = useParams();
@@ -42,12 +43,12 @@ const BuyNowForm = ({ user }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!user) {
-      alert('Please log in to place an order.');
+      toast.error('Please log in to place an order.');
       navigate('/login');
       return;
     }
     if (user.role !== 'consumer') {
-      alert('Only consumers can place orders.');
+      toast.error('Only consumers can place orders.');
       return;
     }
 
@@ -84,7 +85,7 @@ const BuyNowForm = ({ user }) => {
               razorpaySignature: response.razorpay_signature,
             };
             await verifyPayment(verifyData, localStorage.getItem('token'));
-            alert('Payment successful! Order confirmed.');
+            toast.success('Payment successful! Order confirmed.');
             navigate('/consumer');
           } catch (error) {
             setError('Payment verification failed.');

@@ -1,6 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { createOrder, createPayment } from '../utils/api';
+import { toast } from 'react-hot-toast';
+import { getOrders } from '../utils/api';
+
 
 const OrderSummary = ({ user }) => {
   const { orderId } = useParams();
@@ -30,13 +33,13 @@ const OrderSummary = ({ user }) => {
         order_id: data.id,
         handler: async (response) => {
           await createOrder({ listingId: order.listing._id, quantity: order.quantity }, localStorage.getItem('token'));
-          alert('Payment successful');
+          toast.succes('Payment successful');
         },
       };
       const rzp = new window.Razorpay(options);
       rzp.open();
     } catch (error) {
-      alert('Error processing payment');
+      toast.error('Error processing payment');
     }
   };
 

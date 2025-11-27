@@ -193,8 +193,6 @@ const ListLand = () => {
 
   return (
     <div style={styles.container}>
-      {/* Ensure Toast is high enough */}
-      <ToastContainer style={{ zIndex: 100000 }} />
       
       {/* ✅ BACK BUTTON */}
       <button 

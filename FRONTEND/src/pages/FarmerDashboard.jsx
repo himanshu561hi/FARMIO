@@ -1,6 +1,12 @@
 
 // import React, { useState, useEffect } from "react";
 // import { Link } from "react-router-dom";
+// // Map Imports
+// import { MapContainer, TileLayer, Marker, useMapEvents } from "react-leaflet";
+// import "leaflet/dist/leaflet.css";
+// import L from "leaflet";
+
+// // API Imports
 // import {
 //   getListings,
 //   getOrders,
@@ -17,8 +23,12 @@
 //   toggleRentalStatus, 
 //   deleteRental      
 // } from "../utils/api";
+
+// // Components
 // import ProductCard from "../components/ProductCard";
 // import ProfileSection from "../components/ProfileSection";
+
+// // Charts
 // import { Line } from "react-chartjs-2";
 // import {
 //   Chart as ChartJS,
@@ -31,10 +41,14 @@
 //   Legend,
 //   Filler,
 // } from "chart.js";
+
+// // Utils & Assets
 // import { useTranslation } from "react-i18next";
 // import "../utils/i18n";
 // import backgroundImage from "../assets/12.jpg";
-// import toast, { Toaster } from "react-hot-toast";
+// import toast from "react-hot-toast"; // Styling is handled in App.jsx
+
+// // Icons
 // import {
 //   FaMoneyBillWave,
 //   FaWarehouse,
@@ -52,8 +66,9 @@
 //   FaTrash,
 //   FaExclamationCircle,
 //   FaMapMarkerAlt,
-//   FaLocationArrow, // New GPS Icon
-//   FaIdCard         // New License Icon
+//   FaLocationArrow,
+//   FaIdCard,
+//   FaBan
 // } from "react-icons/fa";
 
 // ChartJS.register(
@@ -67,6 +82,27 @@
 //   Filler
 // );
 
+// // --- MAP HELPER COMPONENT ---
+// const LocationMarker = ({ position, setPosition }) => {
+//   const map = useMapEvents({
+//     click(e) {
+//       setPosition(e.latlng);
+//       map.flyTo(e.latlng, map.getZoom());
+//     },
+//   });
+
+//   // Fix for default Leaflet icon in React
+//   const customIcon = new L.Icon({
+//     iconUrl: "https://cdn-icons-png.flaticon.com/512/684/684908.png",
+//     iconSize: [35, 35],
+//     iconAnchor: [17, 35],
+//   });
+
+//   return position === null ? null : (
+//     <Marker position={position} icon={customIcon} />
+//   );
+// };
+
 // const FarmerDashboard = ({ user }) => {
 //   const { t, i18n } = useTranslation();
 
@@ -74,7 +110,7 @@
 //   const [loading, setLoading] = useState(true);
 //   const [error, setError] = useState(null);
 
-//   // 1. Produce (Crops) State
+//   // 1. Produce (Crops) Data
 //   const [listings, setListings] = useState([]);
 //   const [orders, setOrders] = useState([]);
 //   const [earnings, setEarnings] = useState({
@@ -85,20 +121,32 @@
 //   });
 //   const [rejectionMessage, setRejectionMessage] = useState({});
 
-//   // 2. Rental (Machinery) State
+//   // 2. Rental (Machinery) Data
 //   const [myMachines, setMyMachines] = useState([]);
 //   const [myRentals, setMyRentals] = useState([]);
 //   const [incomingRentalRequests, setIncomingRentalRequests] = useState([]);
 //   const [rentalRejectionMsg, setRentalRejectionMsg] = useState({});
 
-//   // --- NEW STATES FOR APPROVAL MODAL & GPS ---
+//   // --- MODAL STATES ---
+  
+//   // A. Approval Modal (Map + Address)
 //   const [isApproveModalOpen, setIsApproveModalOpen] = useState(false);
 //   const [selectedBookingId, setSelectedBookingId] = useState(null);
 //   const [pickupAddress, setPickupAddress] = useState("");
-//   const [isLicenseRequired, setIsLicenseRequired] = useState(false); // License Checkbox
-//   const [gettingLocation, setGettingLocation] = useState(false);     // GPS Loading State
+//   const [isLicenseRequired, setIsLicenseRequired] = useState(false); 
+//   const [gettingLocation, setGettingLocation] = useState(false);
+//   const [mapPosition, setMapPosition] = useState({ lat: 20.5937, lng: 78.9629 }); // India Center
 
-//   // 3. Wallet State
+//   // B. Stop Machine Modal (Reason Input)
+//   const [isStopModalOpen, setIsStopModalOpen] = useState(false);
+//   const [machineToStop, setMachineToStop] = useState(null);
+//   const [stopReason, setStopReason] = useState("");
+
+//   // C. Delete Confirmation Modal
+//   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+//   const [machineToDelete, setMachineToDelete] = useState(null);
+
+//   // 3. Wallet Data
 //   const [upiId, setUpiId] = useState("");
 //   const [withdrawalAmount, setWithdrawalAmount] = useState("");
 
@@ -147,17 +195,19 @@
 //     fetchData();
 //   }, [user, i18n]);
 
-//   // --- RENTAL HANDLERS (UPDATED) ---
+//   // =========================================
+//   //        RENTAL HANDLERS
+//   // =========================================
 
-//   // 1. Open Approval Modal
+//   // 1. Approval Flow
 //   const openApproveModal = (bookingId) => {
 //     setSelectedBookingId(bookingId);
 //     setPickupAddress(""); 
-//     setIsLicenseRequired(false); // Reset checkbox
+//     setIsLicenseRequired(false);
+//     setMapPosition({ lat: 20.5937, lng: 78.9629 }); // Reset Map
 //     setIsApproveModalOpen(true);
 //   };
 
-//   // 2. Get Exact GPS Location
 //   const handleGetCurrentLocation = () => {
 //     if (!navigator.geolocation) {
 //       toast.error("Geolocation is not supported by your browser");
@@ -168,29 +218,24 @@
 //     navigator.geolocation.getCurrentPosition(
 //       (position) => {
 //         const { latitude, longitude } = position.coords;
-//         // Google Maps Link Format
-//         const mapLink = `https://www.google.com/maps?q=${latitude},${longitude}`;
-        
-//         // Append to Text Area
-//         setPickupAddress((prev) => 
-//           prev ? `${prev}\n\n📍 Exact Location: ${mapLink}` : `📍 Exact Location: ${mapLink}`
-//         );
-        
+//         setMapPosition({ lat: latitude, lng: longitude });
 //         setGettingLocation(false);
-//         toast.success("Location Fetched Successfully! 🌍");
+//         toast.success("Location Found! 📍");
 //       },
 //       (error) => {
 //         console.error(error);
-//         toast.error("Unable to retrieve location. Please enable GPS permissions.");
+//         toast.error("Unable to retrieve location");
 //         setGettingLocation(false);
 //       }
 //     );
 //   };
 
-//   // 3. Confirm Approval & Send Email
 //   const handleConfirmApproval = async () => {
+//     const mapLink = `https://www.google.com/maps?q=${mapPosition.lat},${mapPosition.lng}`;
+//     const finalPickupLocation = `${pickupAddress}\n\n📍 Map Location: ${mapLink}`;
+
 //     if (!pickupAddress.trim()) {
-//       toast.error("Please enter pickup location/address");
+//       toast.error("Please enter manual address details");
 //       return;
 //     }
 
@@ -199,20 +244,19 @@
 //         { 
 //           bookingId: selectedBookingId, 
 //           status: "Confirmed", 
-//           pickupLocation: pickupAddress,
-//           isLicenseRequired: isLicenseRequired // Send to backend
+//           pickupLocation: finalPickupLocation, 
+//           isLicenseRequired: isLicenseRequired 
 //         },
 //         localStorage.getItem("token")
 //       );
 
-//       // Optimistic UI Update
 //       setIncomingRentalRequests((prev) =>
 //         prev.map((req) =>
 //           req._id === selectedBookingId ? { ...req, status: "Confirmed" } : req
 //         )
 //       );
       
-//       toast.success("Booking Approved! Email sent to Farmer 🚜");
+//       toast.success("Booking Approved! Email sent.");
 //       setIsApproveModalOpen(false);
 //     } catch (error) {
 //       console.error(error);
@@ -220,7 +264,6 @@
 //     }
 //   };
 
-//   // 4. Handle Rejection
 //   const handleRejectRental = async (bookingId) => {
 //     const message = rentalRejectionMsg[bookingId] || "";
 //     if (!message.trim()) {
@@ -244,43 +287,69 @@
 //     }
 //   };
 
-//   // 5. Delete Machine
-//   const handleDeleteMachine = async (machineId) => {
-//     if (!window.confirm("Are you sure you want to delete this machine? This action cannot be undone.")) return;
+//   // 2. Delete Flow (Using Modal)
+//   const confirmDeleteMachine = (machineId) => {
+//     setMachineToDelete(machineId);
+//     setIsDeleteModalOpen(true);
+//   };
+
+//   const handleDeleteMachine = async () => {
+//     if (!machineToDelete) return;
+    
 //     try {
-//       await deleteRental(machineId, localStorage.getItem('token'));
-//       setMyMachines(myMachines.filter(m => m._id !== machineId));
+//       await deleteRental(machineToDelete, localStorage.getItem('token'));
+//       setMyMachines(myMachines.filter(m => m._id !== machineToDelete));
 //       toast.success("Machine deleted successfully");
+//       setIsDeleteModalOpen(false);
 //     } catch (err) {
 //       toast.error("Failed to delete machine");
 //     }
 //   };
 
-//   // 6. Toggle Availability
-//   const handleToggleStatus = async (machine) => {
-//     let reason = "";
+//   // 3. Toggle Status Flow (Using Modal)
+//   const initiateToggleStatus = (machine) => {
 //     if (machine.available) {
-//       reason = prompt("Reason for stopping bookings? (e.g. Repair, Personal Use)");
-//       if (reason === null) return; 
-//       if (!reason) reason = "Not specified";
+//       // Stop -> Ask Reason
+//       setMachineToStop(machine);
+//       setStopReason("");
+//       setIsStopModalOpen(true);
+//     } else {
+//       // Start -> Direct
+//       handleToggleStatus(machine, "");
 //     }
+//   };
 
+//   const handleStopConfirm = () => {
+//     if (!stopReason.trim()) {
+//       toast.error("Please provide a reason");
+//       return;
+//     }
+//     handleToggleStatus(machineToStop, stopReason);
+//     setIsStopModalOpen(false);
+//   };
+
+//   const handleToggleStatus = async (machine, reason) => {
 //     try {
 //       const { data } = await toggleRentalStatus(machine._id, reason, localStorage.getItem('token'));
 //       setMyMachines(myMachines.map(m => m._id === machine._id ? data : m));
+      
 //       if(data.available) toast.success("Machine is Active ✅");
 //       else toast.success("Machine Stopped 🛑");
+      
 //     } catch (err) {
 //       toast.error("Failed to update status");
 //     }
 //   };
 
-//   // --- PRODUCE & WALLET HANDLERS (Unchanged) ---
+//   // =========================================
+//   //      EXISTING HANDLERS (PRODUCE)
+//   // =========================================
+  
 //   const handleDelete = async (listingId) => {
 //     if (!window.confirm(t("confirm.deleteListing"))) return;
 //     try {
 //       await deleteListing(listingId, localStorage.getItem("token"));
-//       setListings(listings.filter((listing) => listing._id !== listingId));
+//       setListings(listings.filter((l) => l._id !== listingId));
 //       toast.success(t("success.listingDeleted"));
 //     } catch (error) {
 //       toast.error(t("error.deletingListing"));
@@ -356,13 +425,12 @@
 //   });
 //   const chartOptions = { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } } };
 
-//   if (loading) return (<div className="flex justify-center items-center h-screen"><div className="animate-spin rounded-full h-12 w-12 border-t-4 border-green-500"></div></div>);
+//   if (loading) return <div className="flex justify-center items-center h-screen"><div className="animate-spin rounded-full h-12 w-12 border-t-4 border-green-500"></div></div>;
 
 //   return (
 //     <div className="min-h-screen bg-cover bg-center flex flex-col relative"
 //       style={{ backgroundImage: `linear-gradient(135deg, rgba(34, 197, 94, 0.95), rgba(20, 83, 45, 0.98)), url(${backgroundImage})`, backgroundAttachment: "fixed" }}>
-//       <Toaster position="top-center" />
-
+      
 //       <div className="w-full px-4 sm:px-6 lg:px-8 pt-24 pb-12 relative z-10">
         
 //         {/* HEADER */}
@@ -387,7 +455,7 @@
 //           <ProfileSection user={user} />
 //         </div>
 
-//         {/* RENTAL MARKETPLACE */}
+//         {/* RENTAL MARKETPLACE SECTION */}
 //         <div className="mb-10">
 //           <h3 className="text-2xl font-bold text-white mb-6 flex items-center gap-2 border-l-4 border-orange-500 pl-4">
 //             🚜 {t('farmMachineryTitle')}
@@ -395,7 +463,7 @@
 
 //           <div className="grid grid-cols-1 xl:grid-cols-2 gap-8">
             
-//             {/* A. MY EQUIPMENT (Incoming Requests) */}
+//             {/* A. MY EQUIPMENT (Owner View) */}
 //             <div className="backdrop-blur-md bg-gradient-to-br from-orange-900/50 to-red-950/50 rounded-2xl p-6 shadow-2xl border border-orange-500/30">
 //               <div className="flex justify-between items-center mb-4 border-b border-white/20 pb-3">
 //                 <h4 className="text-xl font-bold text-white flex items-center gap-2">
@@ -417,12 +485,14 @@
 //                     return (
 //                       <div key={machine._id} className={`p-4 rounded-xl border border-white/10 relative transition-colors ${isAvailable ? 'bg-black/30' : 'bg-red-900/20'}`}>
                         
+//                         {/* Status Badge */}
 //                         <div className="absolute top-2 right-2 z-10">
 //                           <span className={`px-2 py-1 rounded text-[10px] font-bold uppercase tracking-wider ${isAvailable ? 'bg-green-600/80 text-white' : 'bg-red-600/80 text-white'}`}>
 //                             {isAvailable ? "Active" : "Stopped"}
 //                           </span>
 //                         </div>
 
+//                         {/* Info */}
 //                         <div className="flex gap-4 mb-3">
 //                           <img src={machine.image} alt={machine.name} className={`w-16 h-16 object-cover rounded-lg border ${isAvailable ? 'border-orange-500/50' : 'border-gray-600 grayscale'}`} />
 //                           <div>
@@ -436,13 +506,24 @@
 //                           </div>
 //                         </div>
 
+//                         {/* Controls */}
 //                         <div className="flex gap-2 mb-3">
-//                             <button onClick={() => handleToggleStatus(machine)} className={`flex-1 text-xs py-2 rounded font-bold flex justify-center items-center gap-2 transition ${isAvailable ? 'bg-yellow-600/80 hover:bg-yellow-700 text-white' : 'bg-green-600/80 hover:bg-green-700 text-white'}`}>
+//                             <button 
+//                                 onClick={() => initiateToggleStatus(machine)} 
+//                                 className={`flex-1 text-xs py-2 rounded font-bold flex justify-center items-center gap-2 transition ${isAvailable ? 'bg-yellow-600/80 hover:bg-yellow-700 text-white' : 'bg-green-600/80 hover:bg-green-700 text-white'}`}
+//                             >
 //                                 {isAvailable ? <><FaPowerOff /> Stop Booking</> : <><FaCheckCircle /> Start Booking</>}
 //                             </button>
-//                             <button onClick={() => handleDeleteMachine(machine._id)} className="px-3 bg-red-600/80 hover:bg-red-700 text-white rounded flex justify-center items-center"><FaTrash /></button>
+                            
+//                             <button 
+//                                 onClick={() => confirmDeleteMachine(machine._id)} 
+//                                 className="px-3 bg-red-600/80 hover:bg-red-700 text-white rounded flex justify-center items-center"
+//                             >
+//                                 <FaTrash />
+//                             </button>
 //                         </div>
 
+//                         {/* Requests */}
 //                         <div className="bg-white/5 rounded-lg p-3">
 //                           <p className="text-xs text-gray-300 mb-2 uppercase tracking-wide font-bold">{t('bookingRequests')} ({machineRequests.length})</p>
 //                           {machineRequests.length === 0 ? (
@@ -465,10 +546,9 @@
 //                                     <div className="mt-2 pt-2 border-t border-white/10">
 //                                       <input type="text" placeholder={t('enterRejectReason')} className="w-full text-xs p-2 rounded bg-white/10 text-white mb-2 border border-white/10 focus:border-orange-500 outline-none" value={rentalRejectionMsg[req._id] || ""} onChange={(e) => setRentalRejectionMsg({ ...rentalRejectionMsg, [req._id]: e.target.value })} />
 //                                       <div className="flex gap-2">
-                                        
-//                                         {/* ✅ APPROVE OPENS MODAL */}
+//                                         {/* APPROVE OPENS MODAL */}
 //                                         <button onClick={() => openApproveModal(req._id)} className="flex-1 bg-green-600 hover:bg-green-700 text-white text-xs py-1.5 rounded flex justify-center items-center gap-1 font-bold"><FaCheckCircle /> {t('approve')}</button>
-                                        
+//                                         {/* REJECT IS DIRECT */}
 //                                         <button onClick={() => handleRejectRental(req._id)} className="flex-1 bg-red-600 hover:bg-red-700 text-white text-xs py-1.5 rounded flex justify-center items-center gap-1 font-bold"><FaTimesCircle /> {t('reject')}</button>
 //                                       </div>
 //                                     </div>
@@ -504,7 +584,7 @@
 //                             <h5 className="font-bold text-white">{booking.rental.name}</h5>
 //                             <div className="text-xs text-blue-200 mt-1 space-y-1">
 //                               <p>{t('start')}: {formatDateTime(booking.startDate)}</p>
-//                               <p>{t('end')}: &nbsp;{formatDateTime(booking.endDate)}</p>
+//                               <p>{t('end')}:  {formatDateTime(booking.endDate)}</p>
 //                               <p>{t('total')}: ₹{booking.totalPrice}</p>
 //                               {booking.status === "Cancelled" && booking.rejectionReason && (<p className="text-red-300 italic">"{t('reason')}: {booking.rejectionReason}"</p>)}
 //                             </div>
@@ -581,65 +661,50 @@
 //           </div>
 //         </div>
 
-//         {/* ✅ NEW: APPROVAL MODAL (GPS + License Logic) */}
+//         {/* 1. APPROVAL MODAL (Interactive Map) */}
 //         {isApproveModalOpen && (
-//           <div className="fixed inset-0 bg-black/70 backdrop-blur-sm flex justify-center items-center z-50 p-4 animate-fade-in">
-//             <div className="bg-white p-6 rounded-2xl w-full max-w-md shadow-2xl border-t-4 border-green-500">
-//               <h3 className="text-xl font-bold text-gray-800 mb-3 flex items-center gap-2">
-//                 <FaMapMarkerAlt className="text-green-600"/> Confirm Pickup Details
-//               </h3>
-//               <p className="text-sm text-gray-600 mb-2">
-//                 1. Enter Pickup Address OR Use GPS.
-//               </p>
-
-//               <div className="relative">
-//                 <textarea
-//                   className="w-full border p-3 rounded-lg bg-gray-50 focus:ring-2 focus:ring-green-500 outline-none text-gray-700 resize-none text-sm"
-//                   rows="4"
-//                   placeholder="e.g. Farm House No. 12, Near Village Temple..."
-//                   value={pickupAddress}
-//                   onChange={(e) => setPickupAddress(e.target.value)}
-//                 ></textarea>
-                
-//                 <button 
-//                   onClick={handleGetCurrentLocation}
-//                   disabled={gettingLocation}
-//                   className="absolute bottom-2 right-2 bg-blue-600 hover:bg-blue-700 text-white text-xs px-3 py-1.5 rounded-full flex items-center gap-1 shadow transition"
-//                   title="Get Exact Location"
-//                 >
-//                   {gettingLocation ? 'Locating...' : <><FaLocationArrow /> Use Current Location</>}
-//                 </button>
+//           <div className="fixed inset-0 bg-black/80 backdrop-blur-sm flex justify-center items-center z-[9999] p-4 animate-fade-in">
+//             <div className="bg-white rounded-2xl w-full max-w-lg shadow-2xl border-t-4 border-green-500 overflow-hidden flex flex-col max-h-[90vh]">
+//               <div className="p-5 border-b"><h3 className="text-xl font-bold text-gray-800 flex items-center gap-2"><FaMapMarkerAlt className="text-green-600"/> Select Pickup Point</h3></div>
+//               <div className="h-64 w-full relative">
+//                 <MapContainer center={[mapPosition.lat, mapPosition.lng]} zoom={13} style={{ height: "100%", width: "100%" }}><TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" /><LocationMarker position={mapPosition} setPosition={setMapPosition} /></MapContainer>
+//                 <button onClick={handleGetCurrentLocation} disabled={gettingLocation} className="absolute top-2 right-2 z-[1000] bg-white text-blue-600 p-2 rounded-lg shadow-md border border-gray-200 text-xs font-bold flex items-center gap-1 hover:bg-gray-50">{gettingLocation ? '...' : <><FaLocationArrow /> GPS</>}</button>
 //               </div>
-
-//               {/* License Checkbox */}
-//               <div className="mt-4 p-3 bg-yellow-50 border border-yellow-200 rounded-lg flex items-center justify-between">
-//                 <div className="flex items-center gap-2 text-yellow-800 text-sm font-semibold">
-//                   <FaIdCard /> Driving License Required?
+//               <div className="p-5 space-y-4 bg-gray-50">
+//                 <div>
+//                   <label className="text-xs font-bold text-gray-600 uppercase">Address Details / Landmark</label>
+//                   <textarea className="w-full border p-3 rounded-lg bg-white focus:ring-2 focus:ring-green-500 outline-none text-gray-700 text-sm mt-1" rows="2" placeholder="e.g. Warehouse #4, Near Old School..." value={pickupAddress} onChange={(e) => setPickupAddress(e.target.value)}></textarea>
 //                 </div>
-//                 <label className="relative inline-flex items-center cursor-pointer">
-//                   <input 
-//                     type="checkbox" 
-//                     className="sr-only peer"
-//                     checked={isLicenseRequired}
-//                     onChange={(e) => setIsLicenseRequired(e.target.checked)}
-//                   />
-//                   <div className="w-11 h-6 bg-gray-300 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-green-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-green-600"></div>
-//                 </label>
+//                 <div className="text-xs text-gray-500 bg-blue-50 p-2 rounded border border-blue-100"><strong>Selected Coordinates:</strong> {mapPosition.lat.toFixed(6)}, {mapPosition.lng.toFixed(6)}</div>
+//                 <div className="p-3 bg-yellow-100 border border-yellow-200 rounded-lg flex items-center justify-between"><div className="flex items-center gap-2 text-yellow-800 text-sm font-semibold"><FaIdCard /> Driving License Required?</div><input type="checkbox" className="w-5 h-5 accent-green-600" checked={isLicenseRequired} onChange={(e) => setIsLicenseRequired(e.target.checked)} /></div>
+//                 <div className="flex gap-3 pt-2"><button onClick={() => setIsApproveModalOpen(false)} className="flex-1 py-3 bg-gray-200 text-gray-700 rounded-xl font-bold hover:bg-gray-300">Cancel</button><button onClick={handleConfirmApproval} className="flex-1 py-3 bg-green-600 text-white rounded-xl font-bold hover:bg-green-700 shadow-lg flex items-center justify-center gap-2"><FaCheckCircle /> Approve & Send</button></div>
 //               </div>
+//             </div>
+//           </div>
+//         )}
 
-//               <div className="flex gap-3 mt-5">
-//                 <button
-//                   onClick={() => setIsApproveModalOpen(false)}
-//                   className="flex-1 py-2.5 bg-gray-200 text-gray-700 rounded-lg font-bold hover:bg-gray-300 transition"
-//                 >
-//                   Cancel
-//                 </button>
-//                 <button
-//                   onClick={handleConfirmApproval}
-//                   className="flex-1 py-2.5 bg-gradient-to-r from-green-600 to-green-700 text-white rounded-lg font-bold hover:shadow-lg transition flex items-center justify-center gap-2"
-//                 >
-//                   <FaCheckCircle /> Confirm & Send
-//                 </button>
+//         {/* 2. STOP MACHINE MODAL */}
+//         {isStopModalOpen && (
+//           <div className="fixed inset-0 bg-black/70 backdrop-blur-sm flex justify-center items-center z-[9999] p-4 animate-fade-in">
+//             <div className="bg-white p-6 rounded-2xl w-full max-w-md shadow-2xl border-t-4 border-red-500">
+//               <h3 className="text-xl font-bold text-gray-800 mb-3 flex items-center gap-2"><FaBan className="text-red-600"/> Stop Booking?</h3>
+//               <p className="text-sm text-gray-600 mb-4">Why are you stopping bookings for this machine?</p>
+//               <input type="text" className="w-full border p-3 rounded-lg bg-gray-50 focus:ring-2 focus:ring-red-500 outline-none text-gray-700" placeholder="e.g. Maintenance, Repairing..." value={stopReason} onChange={(e) => setStopReason(e.target.value)} autoFocus />
+//               <div className="flex gap-3 mt-5"><button onClick={() => setIsStopModalOpen(false)} className="flex-1 py-2.5 bg-gray-200 text-gray-700 rounded-lg font-bold hover:bg-gray-300 transition">Cancel</button><button onClick={handleStopConfirm} className="flex-1 py-2.5 bg-red-600 text-white rounded-lg font-bold hover:bg-red-700 shadow-lg">Confirm Stop</button></div>
+//             </div>
+//           </div>
+//         )}
+
+//         {/* 3. DELETE CONFIRMATION MODAL */}
+//         {isDeleteModalOpen && (
+//           <div className="fixed inset-0 bg-black/70 backdrop-blur-sm flex justify-center items-center z-[9999] p-4 animate-fade-in">
+//             <div className="bg-white p-6 rounded-2xl w-full max-w-sm shadow-2xl text-center">
+//               <div className="w-14 h-14 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4"><FaTrash className="text-red-500 text-2xl" /></div>
+//               <h3 className="text-xl font-bold text-gray-800 mb-2">Delete Machine?</h3>
+//               <p className="text-gray-500 text-sm mb-6">Are you sure you want to delete this machine? This action cannot be undone.</p>
+//               <div className="flex gap-3">
+//                 <button onClick={() => setIsDeleteModalOpen(false)} className="flex-1 py-3 bg-gray-100 text-gray-700 rounded-xl font-bold hover:bg-gray-200">Cancel</button>
+//                 <button onClick={handleDeleteMachine} className="flex-1 py-3 bg-red-600 text-white rounded-xl font-bold hover:bg-red-700 shadow-lg">Yes, Delete</button>
 //               </div>
 //             </div>
 //           </div>
@@ -656,10 +721,12 @@
 
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { MapContainer, TileLayer, Marker, useMapEvents } from "react-leaflet"; // ✅ Map Imports
-import "leaflet/dist/leaflet.css"; // ✅ Map CSS
-import L from "leaflet"; // For Custom Icon
+// Map Imports
+import { MapContainer, TileLayer, Marker, useMapEvents } from "react-leaflet";
+import "leaflet/dist/leaflet.css";
+import L from "leaflet";
 
+// API Imports
 import {
   getListings,
   getOrders,
@@ -676,8 +743,12 @@ import {
   toggleRentalStatus, 
   deleteRental      
 } from "../utils/api";
+
+// Components
 import ProductCard from "../components/ProductCard";
 import ProfileSection from "../components/ProfileSection";
+
+// Charts
 import { Line } from "react-chartjs-2";
 import {
   Chart as ChartJS,
@@ -690,10 +761,14 @@ import {
   Legend,
   Filler,
 } from "chart.js";
+
+// Utils & Assets
 import { useTranslation } from "react-i18next";
 import "../utils/i18n";
 import backgroundImage from "../assets/12.jpg";
-import toast, { Toaster } from "react-hot-toast";
+import toast from "react-hot-toast"; 
+
+// Icons
 import {
   FaMoneyBillWave,
   FaWarehouse,
@@ -712,7 +787,8 @@ import {
   FaExclamationCircle,
   FaMapMarkerAlt,
   FaLocationArrow,
-  FaIdCard
+  FaIdCard,
+  FaBan
 } from "react-icons/fa";
 
 ChartJS.register(
@@ -726,16 +802,15 @@ ChartJS.register(
   Filler
 );
 
-// --- MAP HELPER COMPONENT (To Handle Clicks) ---
+// --- MAP HELPER COMPONENT ---
 const LocationMarker = ({ position, setPosition }) => {
   const map = useMapEvents({
     click(e) {
-      setPosition(e.latlng); // Set state on click
-      map.flyTo(e.latlng, map.getZoom()); // Animate to clicked spot
+      setPosition(e.latlng);
+      map.flyTo(e.latlng, map.getZoom());
     },
   });
 
-  // Custom Red Pin Icon
   const customIcon = new L.Icon({
     iconUrl: "https://cdn-icons-png.flaticon.com/512/684/684908.png",
     iconSize: [35, 35],
@@ -754,7 +829,7 @@ const FarmerDashboard = ({ user }) => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  // 1. Produce (Crops) State
+  // 1. Produce (Crops) Data
   const [listings, setListings] = useState([]);
   const [orders, setOrders] = useState([]);
   const [earnings, setEarnings] = useState({
@@ -765,21 +840,32 @@ const FarmerDashboard = ({ user }) => {
   });
   const [rejectionMessage, setRejectionMessage] = useState({});
 
-  // 2. Rental (Machinery) State
+  // 2. Rental (Machinery) Data
   const [myMachines, setMyMachines] = useState([]);
   const [myRentals, setMyRentals] = useState([]);
   const [incomingRentalRequests, setIncomingRentalRequests] = useState([]);
   const [rentalRejectionMsg, setRentalRejectionMsg] = useState({});
 
-  // --- NEW STATES FOR APPROVAL MODAL & MAP ---
+  // --- MODAL STATES ---
+  
+  // A. Approval Modal
   const [isApproveModalOpen, setIsApproveModalOpen] = useState(false);
   const [selectedBookingId, setSelectedBookingId] = useState(null);
   const [pickupAddress, setPickupAddress] = useState("");
   const [isLicenseRequired, setIsLicenseRequired] = useState(false); 
   const [gettingLocation, setGettingLocation] = useState(false);
-  const [mapPosition, setMapPosition] = useState({ lat: 20.5937, lng: 78.9629 }); // Default India Center
+  const [mapPosition, setMapPosition] = useState({ lat: 20.5937, lng: 78.9629 }); 
 
-  // 3. Wallet State
+  // B. Stop Machine Modal
+  const [isStopModalOpen, setIsStopModalOpen] = useState(false);
+  const [machineToStop, setMachineToStop] = useState(null);
+  const [stopReason, setStopReason] = useState("");
+
+  // ✅ C. UNIVERSAL DELETE MODAL (For Listings & Machines)
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [deleteContext, setDeleteContext] = useState({ id: null, type: null }); // type: 'listing' or 'machine'
+
+  // 3. Wallet Data
   const [upiId, setUpiId] = useState("");
   const [withdrawalAmount, setWithdrawalAmount] = useState("");
 
@@ -828,50 +914,46 @@ const FarmerDashboard = ({ user }) => {
     fetchData();
   }, [user, i18n]);
 
-  // --- RENTAL HANDLERS (UPDATED) ---
+  // =========================================
+  //        RENTAL HANDLERS
+  // =========================================
 
-  // 1. Open Approval Modal
+  // 1. Approval Flow
   const openApproveModal = (bookingId) => {
     setSelectedBookingId(bookingId);
     setPickupAddress(""); 
     setIsLicenseRequired(false);
-    setMapPosition({ lat: 20.5937, lng: 78.9629 }); // Reset Map to India Center
+    setMapPosition({ lat: 20.5937, lng: 78.9629 }); 
     setIsApproveModalOpen(true);
   };
 
-  // 2. Get GPS Location
   const handleGetCurrentLocation = () => {
     if (!navigator.geolocation) {
-      toast.error("Geolocation is not supported by your browser");
+      toast.error("Geolocation is not supported");
       return;
     }
-
     setGettingLocation(true);
     navigator.geolocation.getCurrentPosition(
       (position) => {
         const { latitude, longitude } = position.coords;
-        setMapPosition({ lat: latitude, lng: longitude }); // Update Map View
+        setMapPosition({ lat: latitude, lng: longitude });
         setGettingLocation(false);
         toast.success("Location Found! 📍");
       },
       (error) => {
         console.error(error);
-        toast.error("Unable to retrieve location. Check GPS permissions.");
+        toast.error("Unable to retrieve location");
         setGettingLocation(false);
       }
     );
   };
 
-  // 3. Confirm Approval (Combine Address + Map Link)
   const handleConfirmApproval = async () => {
-    // Create Google Maps Link from Selected Coordinates
     const mapLink = `https://www.google.com/maps?q=${mapPosition.lat},${mapPosition.lng}`;
-    
-    // Combine Manual Address + Map Link
     const finalPickupLocation = `${pickupAddress}\n\n📍 Map Location: ${mapLink}`;
 
     if (!pickupAddress.trim()) {
-      toast.error("Please enter a manual address (e.g. Near Temple)");
+      toast.error("Please enter manual address details");
       return;
     }
 
@@ -880,7 +962,7 @@ const FarmerDashboard = ({ user }) => {
         { 
           bookingId: selectedBookingId, 
           status: "Confirmed", 
-          pickupLocation: finalPickupLocation, // Send full details
+          pickupLocation: finalPickupLocation, 
           isLicenseRequired: isLicenseRequired 
         },
         localStorage.getItem("token")
@@ -892,7 +974,7 @@ const FarmerDashboard = ({ user }) => {
         )
       );
       
-      toast.success("Booking Approved! Email sent to Farmer 🚜");
+      toast.success("Booking Approved! Email sent.");
       setIsApproveModalOpen(false);
     } catch (error) {
       console.error(error);
@@ -900,7 +982,6 @@ const FarmerDashboard = ({ user }) => {
     }
   };
 
-  // 4. Handle Rejection
   const handleRejectRental = async (bookingId) => {
     const message = rentalRejectionMsg[bookingId] || "";
     if (!message.trim()) {
@@ -924,48 +1005,85 @@ const FarmerDashboard = ({ user }) => {
     }
   };
 
-  // 5. Delete Machine
-  const handleDeleteMachine = async (machineId) => {
-    if (!window.confirm("Are you sure you want to delete this machine? This action cannot be undone.")) return;
-    try {
-      await deleteRental(machineId, localStorage.getItem('token'));
-      setMyMachines(myMachines.filter(m => m._id !== machineId));
-      toast.success("Machine deleted successfully");
-    } catch (err) {
-      toast.error("Failed to delete machine");
+  // 2. Toggle Status Flow
+  const initiateToggleStatus = (machine) => {
+    if (machine.available) {
+      setMachineToStop(machine);
+      setStopReason("");
+      setIsStopModalOpen(true);
+    } else {
+      handleToggleStatus(machine, "");
     }
   };
 
-  // 6. Toggle Availability
-  const handleToggleStatus = async (machine) => {
-    let reason = "";
-    if (machine.available) {
-      reason = prompt("Reason for stopping bookings? (e.g. Repair, Personal Use)");
-      if (reason === null) return; 
-      if (!reason) reason = "Not specified";
+  const handleStopConfirm = () => {
+    if (!stopReason.trim()) {
+      toast.error("Please provide a reason");
+      return;
     }
+    handleToggleStatus(machineToStop, stopReason);
+    setIsStopModalOpen(false);
+  };
 
+  const handleToggleStatus = async (machine, reason) => {
     try {
       const { data } = await toggleRentalStatus(machine._id, reason, localStorage.getItem('token'));
       setMyMachines(myMachines.map(m => m._id === machine._id ? data : m));
+      
       if(data.available) toast.success("Machine is Active ✅");
       else toast.success("Machine Stopped 🛑");
+      
     } catch (err) {
       toast.error("Failed to update status");
     }
   };
 
-  // --- PRODUCE & WALLET HANDLERS (Unchanged) ---
-  const handleDelete = async (listingId) => {
-    if (!window.confirm(t("confirm.deleteListing"))) return;
+  // =========================================
+  // ✅ UNIFIED DELETE LOGIC (Machine + Listing)
+  // =========================================
+
+  // Trigger for Machine Delete
+  const confirmDeleteMachine = (machineId) => {
+    setDeleteContext({ id: machineId, type: 'machine' });
+    setIsDeleteModalOpen(true);
+  };
+
+  // Trigger for Listing Delete
+  const confirmDeleteListing = (listingId) => {
+    setDeleteContext({ id: listingId, type: 'listing' });
+    setIsDeleteModalOpen(true);
+  };
+
+  // Central Execution Function
+  const handleFinalDelete = async () => {
+    const { id, type } = deleteContext;
+    const token = localStorage.getItem('token');
+
     try {
-      await deleteListing(listingId, localStorage.getItem("token"));
-      setListings(listings.filter((listing) => listing._id !== listingId));
-      toast.success(t("success.listingDeleted"));
-    } catch (error) {
-      toast.error(t("error.deletingListing"));
+      if (type === 'machine') {
+        // Delete Machine Logic
+        await deleteRental(id, token);
+        setMyMachines(myMachines.filter(m => m._id !== id));
+        toast.success("Machine deleted successfully");
+      } else if (type === 'listing') {
+        // Delete Produce Listing Logic
+        await deleteListing(id, token);
+        setListings(listings.filter((l) => l._id !== id));
+        toast.success(t("success.listingDeleted"));
+      }
+      
+      // Close Modal
+      setIsDeleteModalOpen(false);
+      
+    } catch (err) {
+      console.error(err);
+      toast.error("Failed to delete item");
     }
   };
+
+  // =========================================
+  //      OTHER HANDLERS (WALLET/ORDERS)
+  // =========================================
 
   const handleAcceptOrder = async (orderId) => {
     try {
@@ -1036,13 +1154,12 @@ const FarmerDashboard = ({ user }) => {
   });
   const chartOptions = { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } } };
 
-  if (loading) return (<div className="flex justify-center items-center h-screen"><div className="animate-spin rounded-full h-12 w-12 border-t-4 border-green-500"></div></div>);
+  if (loading) return <div className="flex justify-center items-center h-screen"><div className="animate-spin rounded-full h-12 w-12 border-t-4 border-green-500"></div></div>;
 
   return (
     <div className="min-h-screen bg-cover bg-center flex flex-col relative"
       style={{ backgroundImage: `linear-gradient(135deg, rgba(34, 197, 94, 0.95), rgba(20, 83, 45, 0.98)), url(${backgroundImage})`, backgroundAttachment: "fixed" }}>
-      <Toaster position="top-center" />
-
+      
       <div className="w-full px-4 sm:px-6 lg:px-8 pt-24 pb-12 relative z-10">
         
         {/* HEADER */}
@@ -1117,10 +1234,14 @@ const FarmerDashboard = ({ user }) => {
                         </div>
 
                         <div className="flex gap-2 mb-3">
-                            <button onClick={() => handleToggleStatus(machine)} className={`flex-1 text-xs py-2 rounded font-bold flex justify-center items-center gap-2 transition ${isAvailable ? 'bg-yellow-600/80 hover:bg-yellow-700 text-white' : 'bg-green-600/80 hover:bg-green-700 text-white'}`}>
+                            <button onClick={() => initiateToggleStatus(machine)} className={`flex-1 text-xs py-2 rounded font-bold flex justify-center items-center gap-2 transition ${isAvailable ? 'bg-yellow-600/80 hover:bg-yellow-700 text-white' : 'bg-green-600/80 hover:bg-green-700 text-white'}`}>
                                 {isAvailable ? <><FaPowerOff /> Stop Booking</> : <><FaCheckCircle /> Start Booking</>}
                             </button>
-                            <button onClick={() => handleDeleteMachine(machine._id)} className="px-3 bg-red-600/80 hover:bg-red-700 text-white rounded flex justify-center items-center"><FaTrash /></button>
+                            
+                            {/* DELETE MACHINE BUTTON */}
+                            <button onClick={() => confirmDeleteMachine(machine._id)} className="px-3 bg-red-600/80 hover:bg-red-700 text-white rounded flex justify-center items-center">
+                                <FaTrash />
+                            </button>
                         </div>
 
                         <div className="bg-white/5 rounded-lg p-3">
@@ -1145,10 +1266,7 @@ const FarmerDashboard = ({ user }) => {
                                     <div className="mt-2 pt-2 border-t border-white/10">
                                       <input type="text" placeholder={t('enterRejectReason')} className="w-full text-xs p-2 rounded bg-white/10 text-white mb-2 border border-white/10 focus:border-orange-500 outline-none" value={rentalRejectionMsg[req._id] || ""} onChange={(e) => setRentalRejectionMsg({ ...rentalRejectionMsg, [req._id]: e.target.value })} />
                                       <div className="flex gap-2">
-                                        
-                                        {/* ✅ APPROVE OPENS MODAL */}
                                         <button onClick={() => openApproveModal(req._id)} className="flex-1 bg-green-600 hover:bg-green-700 text-white text-xs py-1.5 rounded flex justify-center items-center gap-1 font-bold"><FaCheckCircle /> {t('approve')}</button>
-                                        
                                         <button onClick={() => handleRejectRental(req._id)} className="flex-1 bg-red-600 hover:bg-red-700 text-white text-xs py-1.5 rounded flex justify-center items-center gap-1 font-bold"><FaTimesCircle /> {t('reject')}</button>
                                       </div>
                                     </div>
@@ -1257,86 +1375,57 @@ const FarmerDashboard = ({ user }) => {
         <div className="mt-6 sm:mt-8 backdrop-blur-sm bg-gradient-to-br from-green-800/70 to-lime-800/70 rounded-2xl p-6 shadow-2xl border border-green-500/50">
           <h3 className="text-xl sm:text-2xl font-bold text-white mb-4 flex items-center justify-between border-b border-white/20 pb-3"><span>{t("myListings")} 🌱</span><Link to="/listing/new" className="flex items-center gap-2 bg-gradient-to-r from-green-500 to-lime-500 text-white p-2 rounded-lg shadow-md hover:scale-[1.05]"><FaPlusCircle /> {t("createNewListing")}</Link></h3>
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
-            {listings.map((listing) => (<ProductCard key={listing._id} product={listing} isFarmerDashboard={true} onDelete={handleDelete} />))}
+            {listings.map((listing) => (
+                <ProductCard 
+                    key={listing._id} 
+                    product={listing} 
+                    isFarmerDashboard={true} 
+                    onDelete={confirmDeleteListing} // ✅ Using New Modal Trigger
+                />
+            ))}
           </div>
         </div>
 
-        {/* ✅ UPDATED APPROVAL MODAL (Interactive Map + GPS + License) */}
+        {/* ✅ 1. APPROVAL MODAL (Interactive Map) */}
         {isApproveModalOpen && (
-          <div className="fixed inset-0 bg-black/80 backdrop-blur-sm flex justify-center items-center z-50 p-4 animate-fade-in">
+          <div className="fixed inset-0 bg-black/80 backdrop-blur-sm flex justify-center items-center z-[9999] p-4 animate-fade-in">
             <div className="bg-white rounded-2xl w-full max-w-lg shadow-2xl border-t-4 border-green-500 overflow-hidden flex flex-col max-h-[90vh]">
-              
-              {/* Modal Header */}
-              <div className="p-5 border-b">
-                <h3 className="text-xl font-bold text-gray-800 flex items-center gap-2">
-                  <FaMapMarkerAlt className="text-green-600"/> Select Pickup Point
-                </h3>
-                <p className="text-xs text-gray-500 mt-1">
-                  Tap on the map or use GPS for exact location.
-                </p>
-              </div>
-
-              {/* ✅ MAP SECTION */}
+              <div className="p-5 border-b"><h3 className="text-xl font-bold text-gray-800 flex items-center gap-2"><FaMapMarkerAlt className="text-green-600"/> Select Pickup Point</h3></div>
               <div className="h-64 w-full relative">
-                <MapContainer center={[mapPosition.lat, mapPosition.lng]} zoom={13} style={{ height: "100%", width: "100%" }}>
-                  <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
-                  <LocationMarker position={mapPosition} setPosition={setMapPosition} />
-                </MapContainer>
-                
-                {/* GPS Button */}
-                <button 
-                  onClick={handleGetCurrentLocation}
-                  disabled={gettingLocation}
-                  className="absolute top-2 right-2 z-[1000] bg-white text-blue-600 p-2 rounded-lg shadow-md border border-gray-200 text-xs font-bold flex items-center gap-1 hover:bg-gray-50"
-                >
-                  {gettingLocation ? 'Locating...' : <><FaLocationArrow /> Use My GPS</>}
-                </button>
+                <MapContainer center={[mapPosition.lat, mapPosition.lng]} zoom={13} style={{ height: "100%", width: "100%" }}><TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" /><LocationMarker position={mapPosition} setPosition={setMapPosition} /></MapContainer>
+                <button onClick={handleGetCurrentLocation} disabled={gettingLocation} className="absolute top-2 right-2 z-[1000] bg-white text-blue-600 p-2 rounded-lg shadow-md border border-gray-200 text-xs font-bold flex items-center gap-1 hover:bg-gray-50">{gettingLocation ? '...' : <><FaLocationArrow /> GPS</>}</button>
               </div>
-
-              {/* Input Form */}
               <div className="p-5 space-y-4 bg-gray-50">
-                
-                {/* Manual Address */}
-                <div>
-                  <label className="text-xs font-bold text-gray-600 uppercase">Address Details / Landmark</label>
-                  <textarea
-                    className="w-full border p-3 rounded-lg bg-white focus:ring-2 focus:ring-green-500 outline-none text-gray-700 text-sm mt-1"
-                    rows="2"
-                    placeholder="e.g. Warehouse #4, Near Old School..."
-                    value={pickupAddress}
-                    onChange={(e) => setPickupAddress(e.target.value)}
-                  ></textarea>
-                </div>
-
-                {/* Coords Display (Read-only) */}
-                <div className="text-xs text-gray-500 bg-blue-50 p-2 rounded border border-blue-100">
-                  <strong>Selected Coordinates:</strong> {mapPosition.lat.toFixed(6)}, {mapPosition.lng.toFixed(6)}
-                </div>
-
-                {/* License Checkbox */}
-                <div className="p-3 bg-yellow-100 border border-yellow-200 rounded-lg flex items-center justify-between">
-                  <div className="flex items-center gap-2 text-yellow-800 text-sm font-semibold">
-                    <FaIdCard /> Driving License Required?
-                  </div>
-                  <input 
-                    type="checkbox" 
-                    className="w-5 h-5 accent-green-600"
-                    checked={isLicenseRequired}
-                    onChange={(e) => setIsLicenseRequired(e.target.checked)}
-                  />
-                </div>
-
-                {/* Actions */}
-                <div className="flex gap-3 pt-2">
-                  <button onClick={() => setIsApproveModalOpen(false)} className="flex-1 py-3 bg-gray-200 text-gray-700 rounded-xl font-bold hover:bg-gray-300">
-                    Cancel
-                  </button>
-                  <button onClick={handleConfirmApproval} className="flex-1 py-3 bg-green-600 text-white rounded-xl font-bold hover:bg-green-700 shadow-lg flex items-center justify-center gap-2">
-                    <FaCheckCircle /> Approve & Send
-                  </button>
-                </div>
+                <textarea className="w-full border p-3 rounded-lg bg-white outline-none text-sm text-gray-800" rows="2" placeholder="Manual Address..." value={pickupAddress} onChange={(e) => setPickupAddress(e.target.value)}></textarea>
+                <div className="p-3 bg-yellow-100 border border-yellow-200 rounded-lg flex items-center justify-between"><div className="flex items-center gap-2 text-yellow-800 text-sm font-semibold"><FaIdCard /> Driving License?</div><input type="checkbox" className="w-5 h-5 accent-green-600" checked={isLicenseRequired} onChange={(e) => setIsLicenseRequired(e.target.checked)} /></div>
+                <div className="flex gap-3 pt-2"><button onClick={() => setIsApproveModalOpen(false)} className="flex-1 py-3 bg-gray-200 rounded-xl font-bold text-gray-800 hover:bg-gray-300">Cancel</button><button onClick={handleConfirmApproval} className="flex-1 py-3 bg-green-600 text-white rounded-xl font-bold hover:bg-green-700">Approve</button></div>
               </div>
+            </div>
+          </div>
+        )}
 
+        {/* ✅ 2. STOP MACHINE MODAL */}
+        {isStopModalOpen && (
+          <div className="fixed inset-0 bg-black/70 backdrop-blur-sm flex justify-center items-center z-[9999] p-4 animate-fade-in">
+            <div className="bg-white p-6 rounded-2xl w-full max-w-md shadow-2xl border-t-4 border-red-500">
+              <h3 className="text-xl font-bold text-gray-800 mb-3 flex items-center gap-2"><FaBan className="text-red-600"/> Stop Booking?</h3>
+              <input type="text" className="w-full border p-3 rounded-lg bg-gray-50 focus:ring-2 focus:ring-red-500 outline-none text-gray-800" placeholder="Reason..." value={stopReason} onChange={(e) => setStopReason(e.target.value)} autoFocus />
+              <div className="flex gap-3 mt-5"><button onClick={() => setIsStopModalOpen(false)} className="flex-1 py-2.5 bg-gray-200 text-gray-700 rounded-lg font-bold hover:bg-gray-300 transition">Cancel</button><button onClick={handleStopConfirm} className="flex-1 py-2.5 bg-red-600 text-white rounded-lg font-bold hover:bg-red-700 shadow-lg">Confirm Stop</button></div>
+            </div>
+          </div>
+        )}
+
+        {/* ✅ 3. UNIFIED DELETE MODAL */}
+        {isDeleteModalOpen && (
+          <div className="fixed inset-0 bg-black/70 backdrop-blur-sm flex justify-center items-center z-[9999] p-4 animate-fade-in">
+            <div className="bg-white p-6 rounded-2xl w-full max-w-sm shadow-2xl text-center">
+              <div className="w-14 h-14 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4"><FaTrash className="text-red-500 text-2xl" /></div>
+              <h3 className="text-xl font-bold text-gray-800 mb-2">Confirm Deletion</h3>
+              <p className="text-gray-500 text-sm mb-6">Are you sure you want to delete this item? This cannot be undone.</p>
+              <div className="flex gap-3">
+                <button onClick={() => setIsDeleteModalOpen(false)} className="flex-1 py-3 bg-gray-100 text-gray-700 rounded-xl font-bold hover:bg-gray-200">Cancel</button>
+                <button onClick={handleFinalDelete} className="flex-1 py-3 bg-red-600 text-white rounded-xl font-bold hover:bg-red-700 shadow-lg">Yes, Delete</button>
+              </div>
             </div>
           </div>
         )}

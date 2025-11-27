@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { io } from 'socket.io-client';
 import { getChat, sendMessage } from '../utils/api';
+import { toast } from 'react-hot-toast';
 
 const socket = io('https://farmio.onrender.com');
 
@@ -35,7 +36,7 @@ const Chat = ({ user, listingId }) => {
       socket.emit('sendMessage', { listingId, userId: user.id, message: newMessage });
       setNewMessage('');
     } catch (error) {
-      alert('Error sending message');
+      toast.error('Error sending message');
     }
   };
 

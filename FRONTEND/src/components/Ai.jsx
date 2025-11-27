@@ -1400,12 +1400,12 @@ Use emojis, bullet points, and clear headings to make information easily digesti
     e.preventDefault();
     
     if (!validateForm()) {
-      alert(t.fillAllFields);
+      toast.error(t.fillAllFields);
       return;
     }
 
     if (!location.latitude || !location.longitude) {
-      alert(t.allowLocation);
+      toast.error(t.allowLocation);
       return;
     }
 
@@ -1416,7 +1416,7 @@ Use emojis, bullet points, and clear headings to make information easily digesti
       setResult(response);
     } catch (error) {
       console.error('Error:', error);
-      alert(t.errorMessage);
+      toast.error(t.errorMessage);
     } finally {
       setLoading(false);
     }

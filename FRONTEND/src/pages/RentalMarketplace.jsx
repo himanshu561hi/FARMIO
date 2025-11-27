@@ -328,7 +328,6 @@ const RentalMarketplace = () => {
 
   return (
     <div className="pt-24 px-4 max-w-7xl mx-auto min-h-screen bg-gray-50">
-      <Toaster position="top-center" />
       
       {/* Header Section */}
       <div className="flex flex-col md:flex-row justify-between items-center mb-6 mt-4 gap-4">

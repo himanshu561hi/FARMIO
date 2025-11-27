@@ -832,7 +832,6 @@ const LandList = () => {
 
   return (
     <div className="land-list-container">
-      <ToastContainer style={{ zIndex: 100000 }} />
 
       <div className="header-section">
         <div className="header-decoration pt-5">
